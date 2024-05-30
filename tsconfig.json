@@ -19,10 +19,10 @@
     "noFallthroughCasesInSwitch": false,
     "resolveJsonModule": true,
     "paths": {
-      "@domain/*": ["src/app/domain/*"],
-      "@controller/*": ["src/app/api/*"],
-      "@application/*": ["src/app/application/*"],
-      "@core/*": ["src/app/core/*"],
+      "@domain/*": ["src/domain/*"],
+      "@controller/*": ["src/api/*"],
+      "@application/*": ["src/application/*"],
+      "@core/*": ["src/core/*"],
       "@assets/*": ["src/assets/*"],
       "@environments/*": ["src/environments/*"]
     }

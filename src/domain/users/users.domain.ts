@@ -1,7 +1,7 @@
 import { CreateUserDto } from '@controller/users/dto/create-user.dto';
 import { UpdateUserDto } from '@controller/users/dto/update-user.dto';
 import { UserPageOptionsDto } from '@controller/users/dto/user-pagination-options.dto';
-import { User } from '@controller/users/entities/user.entity';
+import { User } from '@domain/users/entities/user.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { forkJoin, from, map } from 'rxjs';
