@@ -1,0 +1,21 @@
+#!/bin/bash
+. "$(dirname "$0")/_/husky.sh"
+
+if [ -e "$PWD/.husky/post-commit" ]
+then
+    mv "$PWD/.husky/post-commit" "$PWD/.husky/_post-commit"
+fi
+
+
+{ # try
+
+    git add package.json package-lock.json &&
+    git commit --amend -C HEAD --no-verify
+
+} || { # catch
+    echo "FAILED AMEND -- MERGE?"
+    git reset HEAD &&
+    git checkout .
+}
+
+exit 0

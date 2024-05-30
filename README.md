@@ -1,30 +1,33 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# [PROJECT_NAME] PROJECT_NAME
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## 📝 Description
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+<div style="text-align: justify">
+PROJECT_DESCRIPTION
+</div>
+<br />
 
-## Description
+## 👤 Team members
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+| Name      | E-mail     | Started at      |
+| --------- | ---------- | --------------- |
+| TEAM_NAME | TEAM_EMAIL | TEAM_STARTED_AT |
+
+<br />
+
+## 🌲 Branches
+
+- **master**: should only contain changes to README and merges from the `develop` branch. Every merged commit from `develop` should be tagged accordingly.
+- **develop**: working branch.
+
+<br />
+
+## 📦 Dependencies
+
+- Node v14.20.0
+- npm v6.14.17
+
+<br />
 
 ## Installation
 
@@ -32,18 +35,78 @@
 $ npm install
 ```
 
+<br />
+
+## Commit Message Convention
+
+This app follows [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
+
+Commit message will be checked using [husky and commit lint](https://theodorusclarence.com/library/husky-commitlint-prettier), you can't commit if not using the proper convention below.
+
+### Format
+
+`<type>(optional scope): <description>`
+Example: `feat(pre-event): add speakers section`
+
+### 1. Type
+
+Available types are:
+
+- feat → Changes about addition or removal of a feature. Ex: `feat: add table on landing page`, `feat: remove table from landing page`
+- fix → Bug fixing, followed by the bug. Ex: `fix: illustration overflows in mobile view`
+- docs → Update documentation (README.md)
+- style → Updating style, and not changing any logic in the code (reorder imports, fix whitespace, remove comments)
+- chore → Installing new dependencies, or bumping deps
+- refactor → Changes in code, same output, but different approach
+- ci → Update github workflows, husky
+- test → Update testing suite, cypress files
+- revert → when reverting commits
+- perf → Fixing something regarding performance (deriving state, using memo, callback)
+- vercel → Blank commit to trigger vercel deployment. Ex: `vercel: trigger deployment`
+
+### 2. Optional Scope
+
+Labels per page Ex: `feat(pre-event): add date label`
+
+\*If there is no scope needed, you don't need to write it
+
+### 3. Description
+
+Description must fully explain what is being done.
+
+Add BREAKING CHANGE in the description if there is a significant change.
+
+**If there are multiple changes, then commit one by one**
+
+- After colon, there are a single space Ex: `feat: add something`
+- When using `fix` type, state the issue Ex: `fix: file size limiter not working`
+- Use imperative, and present tense: "change" not "changed" or "changes"
+- Don't use capitals in front of the sentence
+- Don't add full stop (.) at the end of the sentence
+
+<br />
+
 ## Running the app
 
 ```bash
 # development
-$ npm run start
-
-# watch mode
 $ npm run start:dev
 
 # production mode
-$ npm run start:prod
+$ npm run start
 ```
+
+<br />
+
+## Deployment Firebase
+
+```bash
+# pre-production deployment
+$ npm run firebase:deploy:pre
+
+```
+
+<br />
 
 ## Test
 
@@ -58,15 +121,7 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+<br />
 
 ## License
 
