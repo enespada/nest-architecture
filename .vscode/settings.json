@@ -1,0 +1,8 @@
+{
+  "liveServer.settings.port": 5501,
+  "files.eol": "\n",
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "always"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+}

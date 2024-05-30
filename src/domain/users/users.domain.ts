@@ -4,7 +4,6 @@ import { UserPageOptionsDto } from '@controller/users/dto/user-pagination-option
 import { User } from '@domain/users/entities/user.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { forkJoin, from, map } from 'rxjs';
 import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 
 @Injectable()
@@ -14,44 +13,42 @@ export class UsersDomainService {
     private userRepository: Repository<User>,
   ) {}
 
-  create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto) {
     const user = this.userRepository.create(createUserDto);
-    return from(this.userRepository.insert(user));
+    return await this.userRepository.insert(user);
   }
 
-  update(updateUserDto: UpdateUserDto) {
+  async update(updateUserDto: UpdateUserDto) {
     const user = this.userRepository.create(updateUserDto);
-    return from(this.userRepository.update(user.id, user));
+    return await this.userRepository.update(user.id, user);
   }
 
-  remove(id: number) {
-    return from(this.userRepository.delete({ id }));
+  async remove(id: number) {
+    return await this.userRepository.delete({ id });
   }
 
-  paginate(pageOptionsDto: UserPageOptionsDto) {
-    return forkJoin([
+  async paginate(userPageOptionsDto: UserPageOptionsDto) {
+    const [totalItems, entities] = await Promise.all([
       this.userRepository.count(),
       this.userRepository.find({
         order: {
-          [pageOptionsDto.orderBy]: pageOptionsDto.order,
+          [userPageOptionsDto.orderBy]: userPageOptionsDto.order,
         },
-        where: pageOptionsDto.where,
-        skip: pageOptionsDto.skip,
-        take: pageOptionsDto.take,
-        relations: pageOptionsDto.relations as unknown as Array<string>,
+        where: userPageOptionsDto.where,
+        skip: userPageOptionsDto.skip,
+        take: userPageOptionsDto.take,
+        relations: userPageOptionsDto.relations as unknown as Array<string>,
       }),
-    ]).pipe(
-      map(([totalItems, entities]) => {
-        return { totalItems, entities };
-      }),
-    );
+    ]);
+
+    return { totalItems, entities };
   }
 
-  find(options: FindManyOptions<User>) {
-    return from(this.userRepository.find(options));
+  async find(options: FindManyOptions<User>) {
+    return await this.userRepository.find(options);
   }
 
-  findOne(options: FindOneOptions<User>) {
-    return from(this.userRepository.findOne(options));
+  async findOne(options: FindOneOptions<User>) {
+    return await this.userRepository.findOne(options);
   }
 }
