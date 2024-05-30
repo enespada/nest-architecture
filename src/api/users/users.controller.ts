@@ -32,7 +32,7 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
+import { User } from '../../domain/users/entities/user.entity';
 import { UserToken } from '@core/decorators/decorators';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserPageOptionsDto } from './dto/user-pagination-options.dto';

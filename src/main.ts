@@ -19,9 +19,9 @@ import { swaggerCss } from '@assets/swagger.css';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { SecureDTO } from '@environments/dto/secure.dto';
 import { AppModule } from './app.module';
-import { CustomLoggerService } from '@core/services/logger/logger.service';
 import { useContainer } from 'class-validator';
-import { ENV } from '@core/constants/constants';
+import { ENV } from './core/constants/constants';
+import { CustomLoggerService } from './core/services/logger/logger.service';
 
 const env = (process.env.NODE_ENV as ENV) ?? ENV.DEV;
 

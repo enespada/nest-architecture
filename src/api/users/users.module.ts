@@ -5,7 +5,7 @@ import { LoggerModule } from '@core/services/logger/logger.module';
 import { UsersDomainService } from '@domain/users/users.domain';
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
+import { User } from '../../domain/users/entities/user.entity';
 import { UsersController } from './users.controller';
 import { SessionModule } from '@core/services/session/session.module';
 
