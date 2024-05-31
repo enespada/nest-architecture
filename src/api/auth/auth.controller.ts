@@ -1,4 +1,4 @@
-import { User } from '@controller/users/entities/user.entity';
+import { User } from '@domain/user/entities/user.entity';
 import { UserToken, Token } from '@core/decorators/decorators';
 import { ExceptionFilter } from '@core/exceptions/global.exception';
 import { JwtRefreshGuard } from '@core/middlewares/jwt/refresh/jwt-refresh.guard';
@@ -21,7 +21,7 @@ import {
 } from '@nestjs/swagger';
 import { LoginDTO } from './dto/login.dto';
 import { AuthService } from '@application/auth/auth.service';
-import { RegisterDto } from './dto/register.dto';
+import { RegisterDTO } from './dto/register.dto';
 
 @Controller('auth')
 @UseFilters(ExceptionFilter)
@@ -29,6 +29,7 @@ import { RegisterDto } from './dto/register.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  //-----------------------------------------------POST login-----------------------------------------------------------
   @Post('login')
   @ApiOperation({ summary: 'Log a user' })
   @ApiBody({ type: LoginDTO })
@@ -36,21 +37,23 @@ export class AuthController {
     status: HttpStatus.BAD_REQUEST,
     description: 'The request sent to the server is invalid or corrupted',
   })
-  login(@Body() body: LoginDTO) {
-    return this.authService.login(body);
+  login(@Body() loginDTO: LoginDTO) {
+    return this.authService.login(loginDTO);
   }
 
+  //-----------------------------------------------POST register-----------------------------------------------------------
   @Post('register')
   @ApiOperation({ summary: 'Register a user' })
-  @ApiBody({ type: RegisterDto })
+  @ApiBody({ type: RegisterDTO })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description: 'The request sent to the server is invalid or corrupted',
   })
-  register(@Body() body: RegisterDto) {
-    return this.authService.register(body);
+  register(@Body() registerDTO: RegisterDTO) {
+    return this.authService.register(registerDTO);
   }
 
+  //-----------------------------------------------GET refresh-----------------------------------------------------------
   @Get('refresh')
   @ApiBearerAuth()
   @ApiOperation({

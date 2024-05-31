@@ -6,9 +6,9 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 
 export abstract class AbstractEntity {
-  @PrimaryGeneratedColumn('increment')
+  @PrimaryGeneratedColumn('uuid')
   @ApiProperty()
-  public id: number;
+  public id: string;
 
   @CreateDateColumn()
   @ApiProperty({ type: Date })

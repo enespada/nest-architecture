@@ -1,5 +1,5 @@
 import { AuthModule } from '@controller/auth/auth.module';
-import { UsersModule } from '@controller/users/users.module';
+import { UserModule } from '@controller/user/user.module';
 import { AppLoggerMiddleware } from '@core/middlewares/logger.middleware';
 import { LoggerModule } from '@core/services/logger/logger.module';
 import environment from '@environments/environment';
@@ -15,7 +15,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       useFactory: (config: ConfigService) => config.get('database'),
       inject: [ConfigService],
     }),
-    UsersModule,
+    UserModule,
     AuthModule,
     LoggerModule,
   ],

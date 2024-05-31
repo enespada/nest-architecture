@@ -1,19 +1,18 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { Observable, firstValueFrom } from 'rxjs';
 import { TokenPayload } from '../dto/token.dto';
 import environment from '@environments/environment';
-import { UsersService } from '@application/users/users.service';
-import { User } from '@controller/users/entities/user.entity';
 import { ErrorDTO } from '@core/response/dto/error.dto';
+import { UserService } from '@application/users/user.service';
+import { User } from '@domain/user/entities/user.entity';
 
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(
   Strategy,
   'jwt.refresh',
 ) {
-  constructor(private usersService: UsersService) {
+  constructor(private userService: UserService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       passReqToCallback: true,
@@ -39,11 +38,9 @@ export class JwtRefreshStrategy extends PassportStrategy(
         HttpStatus.FORBIDDEN,
       );
 
-    const user: User = await firstValueFrom(
-      this.usersService.findOne({
-        where: { id: decodedToken?.user?.id },
-      }) as Observable<User>,
-    );
+    const user: User = await this.userService.findOne({
+      where: { id: decodedToken?.user?.id },
+    });
 
     if (!user)
       throw new HttpException(
