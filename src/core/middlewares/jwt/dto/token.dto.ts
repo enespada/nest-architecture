@@ -1,4 +1,4 @@
-import { User } from '@controller/users/entities/user.entity';
+import { User } from '@domain/user/entities/user.entity';
 
 export interface TokenPayload {
   user: User;

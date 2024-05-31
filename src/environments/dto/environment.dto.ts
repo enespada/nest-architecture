@@ -1,4 +1,4 @@
-import { ENV } from '../../app/core/constants/constants';
+import { ENV } from '@core/constants/constants';
 
 export interface EnvironmentDTO {
   /**

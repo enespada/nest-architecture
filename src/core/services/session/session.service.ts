@@ -1,9 +1,9 @@
-import { User } from '@controller/users/entities/user.entity';
 import { HttpConfigDTO } from '@environments/dto/http-config.dto';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as jwt from 'jsonwebtoken';
 import { AES, enc } from 'crypto-js';
+import { User } from '@domain/user/entities/user.entity';
 
 @Injectable()
 export class SessionService {

@@ -2,7 +2,7 @@ import { PasswordEncrypted } from '@core/middlewares/validation/password.validat
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString, Validate } from 'class-validator';
 
-export class CreateUserDto {
+export class CreateUserDTO {
   @ApiProperty()
   @IsEmail()
   @IsNotEmpty()

@@ -2,13 +2,13 @@ import {
   User,
   UserOrderBy,
   UserRelations,
-} from '@controller/users/entities/user.entity';
-import { PageOptionsDto } from '@core/database/dto/pagination-options.dto';
+} from '@domain/user/entities/user.entity';
+import { PageOptionsDto as PageOptionsDTO } from '@core/database/dto/pagination-options.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsEnum, IsOptional } from 'class-validator';
 
-export class UserPageOptionsDto extends PageOptionsDto {
+export class UserPageOptionsDTO extends PageOptionsDTO {
   @ApiProperty({ enum: UserOrderBy, default: UserOrderBy.id, required: false })
   @IsEnum(UserOrderBy)
   @IsOptional()

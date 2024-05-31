@@ -1,6 +1,5 @@
-import { UsersService } from '@application/users/users.service';
+import { UserService } from '@application/users/user.service';
 import { ExceptionFilter } from '@core/exceptions/global.exception';
-import { TransformInterceptor } from '@core/response/success.response';
 import {
   Body,
   Controller,
@@ -9,15 +8,14 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  ParseIntPipe,
+  ParseUUIDPipe,
   Post,
   Put,
   Query,
   UseFilters,
-  UseGuards,
-  UseInterceptors,
+  // UseGuards,
 } from '@nestjs/common';
-import { JwtUserGuard } from '@core/middlewares/jwt/user/jwt-user.guard';
+// import { JwtUserGuard } from '@core/middlewares/jwt/user/jwt-user.guard';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -31,36 +29,37 @@ import {
   ApiUnauthorizedResponse,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from '../../domain/users/entities/user.entity';
+import { UpdateUserDTO } from './dto/update-user.dto';
+import { User } from '../../domain/user/entities/user.entity';
 import { UserToken } from '@core/decorators/decorators';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UserPageOptionsDto } from './dto/user-pagination-options.dto';
+import { CreateUserDTO } from './dto/create-user.dto';
+import { UserPageOptionsDTO } from './dto/user-pagination-options.dto';
 
 @Controller('users')
 @ApiTags(`Users`)
 @UseFilters(ExceptionFilter)
-@UseGuards(JwtUserGuard)
-@UseInterceptors(TransformInterceptor)
+// @UseGuards(JwtUserGuard)
+// @UseInterceptors(TransformInterceptor)
 @ApiBearerAuth()
 @ApiUnauthorizedResponse({
   description: 'Bearer token must be a valid Token',
 })
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly userService: UserService) {}
 
+  //-----------------------------------------------POST-----------------------------------------------------------
   @Post()
   @ApiOperation({ summary: 'Creates a user' })
-  @ApiBody({ type: CreateUserDto })
+  @ApiBody({ type: CreateUserDTO })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description: 'The request sent to the server is invalid or corrupted',
   })
-  @UseInterceptors(TransformInterceptor)
-  register(@Body() body: CreateUserDto) {
-    return this.usersService.create(body);
+  register(@Body() body: CreateUserDTO) {
+    return this.userService.create(body);
   }
 
+  //-----------------------------------------------GET me-----------------------------------------------------------
   @Get('me')
   @ApiParam({
     name: 'id',
@@ -77,11 +76,24 @@ export class UsersController {
     status: HttpStatus.NOT_FOUND,
   })
   me(@UserToken() user: User) {
-    return this.usersService.findOne({
+    return this.userService.findOne({
       where: { id: user.id },
     });
   }
 
+  //-----------------------------------------------GET-----------------------------------------------------------
+  @Get()
+  @ApiOperation({ summary: 'Gets all users' })
+  @ApiOkResponse({
+    type: Array<User>,
+    isArray: true,
+    description: 'Retrieves an array of users',
+  })
+  getAll() {
+    return this.userService.find();
+  }
+
+  //-----------------------------------------------GET paginate-----------------------------------------------------------
   @Get('paginate')
   @ApiOperation({ summary: 'Paginate users' })
   @ApiExtraModels(User)
@@ -100,10 +112,11 @@ export class UsersController {
     isArray: true,
     description: 'Retrieves an array of users',
   })
-  paginate(@Query() pageOptionsDto: UserPageOptionsDto) {
-    return this.usersService.paginate(pageOptionsDto);
+  paginate(@Query() pageOptionsDto: UserPageOptionsDTO) {
+    return this.userService.paginate(pageOptionsDto);
   }
 
+  //-----------------------------------------------GET :id-----------------------------------------------------------
   @Get(':id')
   @ApiParam({
     name: 'id',
@@ -119,24 +132,14 @@ export class UsersController {
     description: 'There is no user with the given id',
     status: HttpStatus.NOT_FOUND,
   })
-  get(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.findOne({ where: { id } });
+  get(@Param('id', ParseUUIDPipe) id: string) {
+    return this.userService.findOne({ where: { id } });
   }
 
-  @Get()
-  @ApiOperation({ summary: 'Gets all users' })
-  @ApiOkResponse({
-    type: Array<User>,
-    isArray: true,
-    description: 'Retrieves an array of users',
-  })
-  getAll() {
-    return this.usersService.find();
-  }
-
+  //-------------------------------------------------PUT-------------------------------------------------------------
   @Put()
   @ApiOperation({ summary: 'Updates an user' })
-  @ApiBody({ type: UpdateUserDto })
+  @ApiBody({ type: UpdateUserDTO })
   @ApiOkResponse({
     type: User,
     description: 'Retrieves an updated user',
@@ -147,11 +150,12 @@ export class UsersController {
   })
   updateUser(
     @Body()
-    userDto: UpdateUserDto,
+    updateUserDTO: UpdateUserDTO,
   ) {
-    return this.usersService.update(userDto);
+    return this.userService.update(updateUserDTO);
   }
 
+  //-----------------------------------------------DELETE :id-----------------------------------------------------------
   @Delete(':id')
   @ApiOperation({ summary: 'Deletes an user' })
   @ApiParam({
@@ -164,7 +168,7 @@ export class UsersController {
     status: HttpStatus.OK,
     description: 'User successfully deleted',
   })
-  deleteUser(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.remove(id);
+  deleteUser(@Param('id', ParseUUIDPipe) id: string) {
+    return this.userService.remove(id);
   }
 }
