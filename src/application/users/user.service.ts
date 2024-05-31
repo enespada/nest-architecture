@@ -24,6 +24,9 @@ export class UserService {
   }
 
   async update(updateUserDTO: UpdateUserDTO) {
+    updateUserDTO.password = this.sessionService.encrypt(
+      updateUserDTO.password,
+    );
     return await this.userDomainService.update(updateUserDTO);
   }
 
