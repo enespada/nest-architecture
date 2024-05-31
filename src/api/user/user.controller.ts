@@ -38,7 +38,6 @@ import { UserPageOptionsDTO } from './dto/user-pagination-options.dto';
 @Controller('users')
 @ApiTags(`Users`)
 @UseFilters(ExceptionFilter)
-@UseGuards(JwtUserGuard)
 // @UseInterceptors(TransformInterceptor)
 @ApiBearerAuth()
 @ApiUnauthorizedResponse({
@@ -73,6 +72,7 @@ export class UsersController {
 
   //-----------------------------------------------GET me-----------------------------------------------------------
   @Get('me')
+  @UseGuards(JwtUserGuard)
   @ApiParam({
     name: 'id',
     type: String,
@@ -95,6 +95,7 @@ export class UsersController {
 
   //-----------------------------------------------GET paginate-----------------------------------------------------------
   @Get('paginate')
+  @UseGuards(JwtUserGuard)
   @ApiOperation({ summary: 'Paginate users' })
   @ApiExtraModels(User)
   @ApiQuery({
@@ -118,6 +119,7 @@ export class UsersController {
 
   //-----------------------------------------------GET :id-----------------------------------------------------------
   @Get(':id')
+  @UseGuards(JwtUserGuard)
   @ApiParam({
     name: 'id',
     type: String,
@@ -138,6 +140,7 @@ export class UsersController {
 
   //-------------------------------------------------PUT-------------------------------------------------------------
   @Put()
+  @UseGuards(JwtUserGuard)
   @ApiOperation({ summary: 'Updates an user' })
   @ApiBody({ type: UpdateUserDTO })
   @ApiOkResponse({
@@ -157,6 +160,7 @@ export class UsersController {
 
   //-----------------------------------------------DELETE :id-----------------------------------------------------------
   @Delete(':id')
+  @UseGuards(JwtUserGuard)
   @ApiOperation({ summary: 'Deletes an user' })
   @ApiParam({
     name: 'id',
