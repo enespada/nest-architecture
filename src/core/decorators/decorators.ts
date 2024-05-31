@@ -10,7 +10,7 @@ import { DecodedIdToken } from 'firebase-admin/lib/auth/token-verifier';
 export const UserToken = createParamDecorator(
   (data: unknown, ctx: ExecutionContext): User => {
     const request = ctx.switchToHttp().getRequest();
-    return request?.user?.user;
+    return request?.user;
   },
 );
 

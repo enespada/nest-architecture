@@ -1,4 +1,4 @@
-import { PageDto } from '@core/database/dto/page.dto';
+import { PageDTO } from '@core/database/dto/page.dto';
 import {
   Injectable,
   NestInterceptor,
@@ -23,7 +23,7 @@ export class TransformInterceptor implements NestInterceptor<any, Response> {
       map((rawData) => {
         let data;
         if (this.instanceOfEntityQueryResponse(rawData)) {
-          data = (rawData as PageDto<any>).data;
+          data = (rawData as PageDTO<any>).data;
         } else data = Array.isArray(rawData) ? rawData : [rawData];
 
         return {
@@ -35,7 +35,7 @@ export class TransformInterceptor implements NestInterceptor<any, Response> {
     );
   }
 
-  private instanceOfEntityQueryResponse(object: any): object is PageDto<any> {
+  private instanceOfEntityQueryResponse(object: any): object is PageDTO<any> {
     return 'meta' in object && 'data' in object;
   }
 }
