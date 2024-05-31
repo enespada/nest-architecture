@@ -30,12 +30,12 @@ export class AuthService {
         HttpStatus.FORBIDDEN,
       );
 
-    const decriptedBodyPassword = this.sessionService.decrypt(
-      loginDto.password,
-    );
+    // const decriptedBodyPassword = this.sessionService.decrypt(
+    //   loginDto.password,
+    // );
     const decriptedUserPassword = this.sessionService.decrypt(user.password);
 
-    if (decriptedBodyPassword !== decriptedUserPassword)
+    if (loginDto.password !== decriptedUserPassword)
       throw new HttpException(
         'User or password incorrect',
         HttpStatus.FORBIDDEN,
@@ -50,7 +50,7 @@ export class AuthService {
     return { accessToken, refreshToken } as UserToken;
   }
 
-  register(registerDto: RegisterDTO) {
-    return this.usersService.create(registerDto);
+  async register(registerDto: RegisterDTO) {
+    return await this.usersService.create(registerDto);
   }
 }

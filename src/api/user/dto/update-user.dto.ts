@@ -1,12 +1,5 @@
-import { PasswordEncrypted } from '@core/middlewares/validation/password.validation';
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsEmail,
-  IsOptional,
-  IsString,
-  IsUUID,
-  Validate,
-} from 'class-validator';
+import { IsEmail, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class UpdateUserDTO {
   @ApiProperty()
@@ -20,7 +13,6 @@ export class UpdateUserDTO {
 
   @ApiProperty()
   @IsString()
-  @Validate(PasswordEncrypted)
   @IsOptional()
   password?: string;
 }
