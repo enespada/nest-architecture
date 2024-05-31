@@ -13,9 +13,9 @@ import {
   Put,
   Query,
   UseFilters,
-  // UseGuards,
+  UseGuards,
 } from '@nestjs/common';
-// import { JwtUserGuard } from '@core/middlewares/jwt/user/jwt-user.guard';
+import { JwtUserGuard } from '@core/middlewares/jwt/user/jwt-user.guard';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -38,7 +38,7 @@ import { UserPageOptionsDTO } from './dto/user-pagination-options.dto';
 @Controller('users')
 @ApiTags(`Users`)
 @UseFilters(ExceptionFilter)
-// @UseGuards(JwtUserGuard)
+@UseGuards(JwtUserGuard)
 // @UseInterceptors(TransformInterceptor)
 @ApiBearerAuth()
 @ApiUnauthorizedResponse({
@@ -57,6 +57,18 @@ export class UsersController {
   })
   register(@Body() body: CreateUserDTO) {
     return this.userService.create(body);
+  }
+
+  //-----------------------------------------------GET-----------------------------------------------------------
+  @Get()
+  @ApiOperation({ summary: 'Gets all users' })
+  @ApiOkResponse({
+    type: Array<User>,
+    isArray: true,
+    description: 'Retrieves an array of users',
+  })
+  getAll() {
+    return this.userService.find();
   }
 
   //-----------------------------------------------GET me-----------------------------------------------------------
@@ -79,18 +91,6 @@ export class UsersController {
     return this.userService.findOne({
       where: { id: user.id },
     });
-  }
-
-  //-----------------------------------------------GET-----------------------------------------------------------
-  @Get()
-  @ApiOperation({ summary: 'Gets all users' })
-  @ApiOkResponse({
-    type: Array<User>,
-    isArray: true,
-    description: 'Retrieves an array of users',
-  })
-  getAll() {
-    return this.userService.find();
   }
 
   //-----------------------------------------------GET paginate-----------------------------------------------------------

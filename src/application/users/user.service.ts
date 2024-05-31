@@ -2,7 +2,7 @@ import { CreateUserDTO } from '@controller/user/dto/create-user.dto';
 import { UpdateUserDTO } from '@controller/user/dto/update-user.dto';
 import { UserPageOptionsDTO } from '@controller/user/dto/user-pagination-options.dto';
 import { User } from '@domain/user/entities/user.entity';
-import { PageDto } from '@core/database/dto/page.dto';
+import { PageDTO } from '@core/database/dto/page.dto';
 import { PageMetaDTO } from '@core/database/dto/pagination-meta.dto';
 import { UserDomainService } from '@domain/user/user.domain';
 import { Injectable } from '@nestjs/common';
@@ -46,6 +46,6 @@ export class UserService {
       totalItems,
       pageOptionsDto: userPageOptionsDto,
     });
-    return new PageDto(entities, pageMetaDto);
+    return new PageDTO(entities, pageMetaDto);
   }
 }
