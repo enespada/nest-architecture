@@ -1,12 +1,12 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { PageOptionsDto } from "./pagination-options.dto";
+import { ApiProperty } from '@nestjs/swagger';
+import { PageOptionsDTO } from './pagination-options.dto';
 
 export interface PageMetaDtoParameters {
-  pageOptionsDto: PageOptionsDto;
+  pageOptionsDto: PageOptionsDTO;
   totalItems: number;
 }
 
-export class PageMetaDto {
+export class PageMetaDTO {
   @ApiProperty()
   readonly page: number;
 

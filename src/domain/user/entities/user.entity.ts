@@ -4,7 +4,7 @@ import { Entity, Column } from 'typeorm';
 
 @Entity()
 export class User extends AbstractEntity {
-  @Column()
+  @Column({ unique: true })
   @ApiProperty()
   email: string;
 
