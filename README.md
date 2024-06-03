@@ -17,15 +17,15 @@ PROJECT_DESCRIPTION
 
 ## 🌲 Branches
 
-- **master**: should only contain changes to README and merges from the `develop` branch. Every merged commit from `develop` should be tagged accordingly.
+- **main**: should only contain changes to README and merges from the `develop` branch. Every merged commit from `develop` should be tagged accordingly.
 - **develop**: working branch.
 
 <br />
 
 ## 📦 Dependencies
 
-- Node v14.20.0
-- npm v6.14.17
+- Node v20.9.0
+- npm v10.1.0
 
 <br />
 
@@ -33,6 +33,19 @@ PROJECT_DESCRIPTION
 
 ```bash
 $ npm install
+```
+
+<br />
+
+## Running the app
+
+```bash
+# development
+# $ npm run start:dev
+$ docker compose up -d --build
+
+# production mode
+$ npm run start
 ```
 
 <br />
@@ -83,18 +96,6 @@ Add BREAKING CHANGE in the description if there is a significant change.
 - Use imperative, and present tense: "change" not "changed" or "changes"
 - Don't use capitals in front of the sentence
 - Don't add full stop (.) at the end of the sentence
-
-<br />
-
-## Running the app
-
-```bash
-# development
-$ npm run start:dev
-
-# production mode
-$ npm run start
-```
 
 <br />
 
