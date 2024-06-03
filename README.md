@@ -39,6 +39,8 @@ $ npm install
 
 ## Running the app
 
+The best way to run the app is using Docker. This way you will be able to set up the machine that will run your backend.
+
 ```bash
 # development
 # $ npm run start:dev
