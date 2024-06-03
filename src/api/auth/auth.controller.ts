@@ -37,8 +37,8 @@ export class AuthController {
     status: HttpStatus.BAD_REQUEST,
     description: 'The request sent to the server is invalid or corrupted',
   })
-  login(@Body() loginDTO: LoginDTO) {
-    return this.authService.login(loginDTO);
+  login(@Body() loginDto: LoginDTO) {
+    return this.authService.login(loginDto);
   }
 
   //-----------------------------------------------POST register-----------------------------------------------------------
@@ -49,8 +49,8 @@ export class AuthController {
     status: HttpStatus.BAD_REQUEST,
     description: 'The request sent to the server is invalid or corrupted',
   })
-  register(@Body() registerDTO: RegisterDTO) {
-    return this.authService.register(registerDTO);
+  register(@Body() registerDto: RegisterDTO) {
+    return this.authService.register(registerDto);
   }
 
   //-----------------------------------------------GET refresh-----------------------------------------------------------
