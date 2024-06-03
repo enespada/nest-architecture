@@ -54,8 +54,8 @@ export class UsersController {
     status: HttpStatus.BAD_REQUEST,
     description: 'The request sent to the server is invalid or corrupted',
   })
-  register(@Body() body: CreateUserDTO) {
-    return this.userService.create(body);
+  register(@Body() createUserDto: CreateUserDTO) {
+    return this.userService.create(createUserDto);
   }
 
   //-----------------------------------------------GET-----------------------------------------------------------
@@ -153,9 +153,9 @@ export class UsersController {
   })
   updateUser(
     @Body()
-    updateUserDTO: UpdateUserDTO,
+    updateUserDto: UpdateUserDTO,
   ) {
-    return this.userService.update(updateUserDTO);
+    return this.userService.update(updateUserDto);
   }
 
   //-----------------------------------------------DELETE :id-----------------------------------------------------------
