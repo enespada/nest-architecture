@@ -1,4 +1,4 @@
-import { UserService } from '@application/users/user.service';
+import { UserService } from '@application/user/user.service';
 import { JwtModule } from '@core/middlewares/jwt/jwt.module';
 import { PasswordEncrypted } from '@core/middlewares/validation/password.validation';
 import { LoggerModule } from '@core/services/logger/logger.module';

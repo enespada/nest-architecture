@@ -4,7 +4,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { TokenPayload } from '../dto/token.dto';
 import environment from '@environments/environment';
 import { ErrorDTO } from '@core/response/dto/error.dto';
-import { UserService } from '@application/users/user.service';
+import { UserService } from '@application/user/user.service';
 import { User } from '@domain/user/entities/user.entity';
 
 @Injectable()

@@ -1,4 +1,4 @@
-import { UserService } from '@application/users/user.service';
+import { UserService } from '@application/user/user.service';
 import { ExceptionFilter } from '@core/exceptions/global.exception';
 import {
   Body,
@@ -73,12 +73,8 @@ export class UsersController {
   //-----------------------------------------------GET me-----------------------------------------------------------
   @Get('me')
   @UseGuards(JwtUserGuard)
-  @ApiParam({
-    name: 'id',
-    type: String,
-    description: 'Unique identifier of the user',
-  })
   @ApiOperation({ summary: 'Gets an user by given token' })
+  @ApiExtraModels(User)
   @ApiOkResponse({
     type: User,
     description: 'Retrieves user data',
@@ -113,8 +109,8 @@ export class UsersController {
     isArray: true,
     description: 'Retrieves an array of users',
   })
-  paginate(@Query() pageOptionsDto: UserPageOptionsDTO) {
-    return this.userService.paginate(pageOptionsDto);
+  paginate(@Query() userPageOptionsDto: UserPageOptionsDTO) {
+    return this.userService.paginate(userPageOptionsDto);
   }
 
   //-----------------------------------------------GET :id-----------------------------------------------------------
