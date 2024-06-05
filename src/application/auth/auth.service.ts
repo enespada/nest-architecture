@@ -1,12 +1,12 @@
 import { MailService } from '@core/services/mail/mail.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { UserService } from '../users/user.service';
 import { LoginDTO as LoginDto } from '@controller/auth/dto/login.dto';
 import { User } from '@domain/user/entities/user.entity';
 import { UserToken } from '@controller/auth/dto/token.dto';
 import { SessionService } from '@core/services/session/session.service';
 import { RegisterDTO } from '@controller/auth/dto/register.dto';
+import { UserService } from '@application/user/user.service';
 
 @Injectable()
 export class AuthService {
@@ -22,6 +22,7 @@ export class AuthService {
       where: {
         email: loginDto.email,
       },
+      select: { password: true },
     });
 
     if (!user)
