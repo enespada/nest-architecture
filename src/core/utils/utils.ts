@@ -111,7 +111,7 @@ export function intersectObjects<T>(
 /**
  * Este método recoge una lista de objetos y devuelve un objeto con las propiedades de los objetos de la lista
  * situadas según el nivel de anidacion de los objetos de la lista. Ninguna propiedad cuyo valor NO sea un objeto puede
- * estar en mas de un objeto de la lista. Si no el funcionamiento no sera el esperado.
+ * estar en mas de un objeto de la lista. Si no, el funcionamiento no sera el esperado.
  * @param {Array<any>} objects - Lista de objetos.
  * @returns {any} Objeto anidado.
  */

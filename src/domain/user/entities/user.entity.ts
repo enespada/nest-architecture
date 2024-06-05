@@ -10,7 +10,6 @@ export class User extends AbstractEntity {
   email: string;
 
   @Column({ select: false })
-  @ApiProperty()
   password: string;
 }
 
