@@ -18,8 +18,8 @@ export class UserDomainService {
     private userRepository: Repository<User>,
   ) {}
 
-  async create(createUserDTO: CreateUserDTO) {
-    const user = this.userRepository.create(createUserDTO);
+  async create(createUserDto: CreateUserDTO) {
+    const user = this.userRepository.create(createUserDto);
     return await this.userRepository.insert(user);
   }
 
@@ -32,10 +32,10 @@ export class UserDomainService {
     return await this.userRepository.delete({ id });
   }
 
-  async paginate(userPageOptionsDTO: UserPageOptionsDTO) {
-    const where = userPageOptionsDTO.where
+  async paginate(userPageOptionsDto: UserPageOptionsDTO) {
+    const where = userPageOptionsDto.where
       ? combineObjectsArray(
-          Object.entries(userPageOptionsDTO.where).map(([k, v]) => {
+          Object.entries(userPageOptionsDto.where).map(([k, v]) => {
             const relationTrace: string = UserWhere[k];
             const obj = { [relationTrace]: changeToLike(v) };
 
@@ -48,12 +48,12 @@ export class UserDomainService {
       this.userRepository.count(),
       this.userRepository.find({
         order: {
-          [userPageOptionsDTO.orderBy]: userPageOptionsDTO.order,
+          [userPageOptionsDto.orderBy]: userPageOptionsDto.order,
         },
         where: where,
-        skip: userPageOptionsDTO.skip,
-        take: userPageOptionsDTO.take,
-        relations: userPageOptionsDTO.relations as unknown as Array<string>,
+        skip: userPageOptionsDto.skip,
+        take: userPageOptionsDto.take,
+        relations: userPageOptionsDto.relations as unknown as Array<string>,
       }),
     ]);
 

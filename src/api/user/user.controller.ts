@@ -73,7 +73,7 @@ export class UsersController {
   //-----------------------------------------------GET me-----------------------------------------------------------
   @Get('me')
   @UseGuards(JwtUserGuard)
-  @ApiOperation({ summary: 'Gets an user by given token' })
+  @ApiOperation({ summary: 'Gets a user by given token' })
   @ApiExtraModels(User)
   @ApiOkResponse({
     type: User,
@@ -121,7 +121,7 @@ export class UsersController {
     type: String,
     description: 'Unique identifier of the user',
   })
-  @ApiOperation({ summary: 'Gets an user by given id' })
+  @ApiOperation({ summary: 'Gets a user by given id' })
   @ApiOkResponse({
     type: User,
     description: 'Retrieves user data',
@@ -137,7 +137,7 @@ export class UsersController {
   //-------------------------------------------------PUT-------------------------------------------------------------
   @Put()
   @UseGuards(JwtUserGuard)
-  @ApiOperation({ summary: 'Updates an user' })
+  @ApiOperation({ summary: 'Updates a user' })
   @ApiBody({ type: UpdateUserDTO })
   @ApiOkResponse({
     type: User,
