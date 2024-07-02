@@ -25,62 +25,99 @@ export class AwsService {
     });
   }
 
-  uploadFile(path: string, buffer: Buffer, ContentType?: string) {
-    return this.s3.putObject(
-      {
-        Key: path,
-        Bucket: this.awsConfig.bucket,
-        Body: buffer,
-        ContentType,
-      },
-      (error: AWSError) => this.handleAWSError(error),
-    );
+  uploadFile(
+    path: string,
+    buffer: Buffer,
+    ContentType?: string,
+  ): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.s3.putObject(
+        {
+          Key: path,
+          Bucket: this.awsConfig.bucket,
+          Body: buffer,
+          ContentType,
+        },
+        (error: AWSError) => {
+          if (error) {
+            this.handleAWSError(error);
+            reject(error);
+          }
+          resolve();
+        },
+      );
+    });
   }
 
-  deleteFile(path: string) {
-    return this.s3.deleteObject(
-      {
-        Key: path,
-        Bucket: this.awsConfig.bucket,
-      },
-      (error: AWSError) => this.handleAWSError(error),
-    );
+  async deleteFile(path: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.s3.deleteObject(
+        {
+          Key: path,
+          Bucket: this.awsConfig.bucket,
+        },
+        (error: AWSError) => {
+          if (error) {
+            this.handleAWSError(error);
+            reject(error);
+          }
+          resolve();
+        },
+      );
+    });
   }
 
-  deleteFolder(folderPath: string, contentType?: S3_CONTENT_TYPE): void {
+  deleteFolder(
+    folderPath: string,
+    contentType?: S3_CONTENT_TYPE,
+  ): Promise<void> {
     const s3Params = {
       Bucket: this.awsConfig.bucket,
       Prefix: folderPath,
       ResponseContentType: contentType,
     };
-    this.s3.listObjectsV2(s3Params, (error: AWSError, url: any) => {
-      if (error) this.handleAWSError(error);
-      else {
-        const deleteObjectsParams = {
-          Bucket: s3Params.Bucket,
-          Delete: {
-            Objects: url.Contents?.map((object) => ({ Key: object.Key })),
-          },
-        };
-        this.s3.deleteObjects(
-          deleteObjectsParams,
-          (error: AWSError, data: S3.DeleteObjectsOutput) => {
+    return new Promise((resolve, reject) => {
+      this.s3.listObjectsV2(
+        s3Params,
+        (error: AWSError, url: S3.ListObjectsV2Output) => {
+          if (error) {
             this.handleAWSError(error);
-          },
-        );
-      }
+            reject(error);
+          } else {
+            if (url.Contents.length === 0) {
+              resolve();
+              return;
+            } else {
+              const deleteObjectsParams = {
+                Bucket: s3Params.Bucket,
+                Delete: {
+                  Objects: url.Contents?.map((object) => ({ Key: object.Key })),
+                },
+              };
+              resolve(
+                new Promise((resolve1, reject1) => {
+                  this.s3.deleteObjects(
+                    deleteObjectsParams,
+                    (error: AWSError, data: S3.DeleteObjectsOutput) => {
+                      if (error) {
+                        this.handleAWSError(error);
+                        reject1(error);
+                      }
+                      resolve1();
+                    },
+                  );
+                }),
+              );
+            }
+          }
+        },
+      );
     });
   }
 
   handleAWSError(awsError: AWSError) {
     if (awsError)
       throw new HttpException(awsError.message, HttpStatus.BAD_REQUEST);
-  }
-
-  getStaticUrl(path: string, name?: string) {
-    // const filePath = `https://barberias.s3.amazonaws.com/${path}`;
-    // const signedUrlDTO: SignedUrlDTO = { url: filePath, key: name };
-    // return signedUrlDTO;
   }
 
   getUrl(path: string, contentType?: S3_CONTENT_TYPE) {
@@ -102,31 +139,45 @@ export class AwsService {
     );
   }
 
-  listUrl(path: string, contentType?: S3_CONTENT_TYPE) {
+  listUrl(
+    path: string,
+    contentType?: S3_CONTENT_TYPE,
+  ): Promise<SignedUrlDTO[]> {
     const s3Params = {
       Bucket: this.awsConfig.bucket,
       Prefix: path,
       ResponseContentType: contentType,
     };
 
-    this.s3.listObjectsV2(s3Params, (error: AWSError, url: any) => {
-      if (error) this.handleAWSError(error);
-      else {
-        const signedUrls: SignedUrlDTO[] = [];
-        const staticPath = `https://barberias.s3.amazonaws.com/${path}`;
-        for (const obj of url.Contents) {
-          // const url = this.s3.getSignedUrl('getObject', {
-          //   Bucket: this.awsConfig.bucket,
-          //   Key: obj.Key,
-          //   ResponseContentType: contentType,
-          // });
-          const fileName = obj.Key.split('/')[obj.Key.split('/').length - 1];
+    return new Promise((resolve, reject) => {
+      this.s3.listObjectsV2(
+        s3Params,
+        (error: AWSError, url: S3.ListObjectsV2Output) => {
+          if (error) {
+            this.handleAWSError(error);
+            reject(error);
+          } else {
+            const signedUrls: SignedUrlDTO[] = [];
+            const staticPath = `https://ejemplo.s3.amazonaws.com/${path}`;
+            for (const obj of url.Contents) {
+              // const url = this.s3.getSignedUrl('getObject', {
+              //   Bucket: this.awsConfig.bucket,
+              //   Key: obj.Key,
+              //   ResponseContentType: contentType,
+              // });
+              const fileName =
+                obj.Key.split('/')[obj.Key.split('/').length - 1];
 
-          signedUrls.push({ url: `${staticPath}${fileName}`, key: obj.Key });
-        }
+              signedUrls.push({
+                url: `${staticPath}${fileName}`,
+                key: obj.Key,
+              });
+            }
 
-        return signedUrls;
-      }
+            resolve(signedUrls);
+          }
+        },
+      );
     });
   }
 }

@@ -157,7 +157,7 @@ export class UsersController {
   //-----------------------------------------------DELETE :id-----------------------------------------------------------
   @Delete(':id')
   @UseGuards(JwtUserGuard)
-  @ApiOperation({ summary: 'Deletes an user' })
+  @ApiOperation({ summary: 'Deletes a user' })
   @ApiParam({
     name: 'id',
     type: String,
