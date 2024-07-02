@@ -7,7 +7,7 @@ import {
   nestDottedObject,
 } from '@core/utils/utils';
 import { User, UserWhere } from '@domain/user/entities/user.entity';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 
@@ -18,24 +18,23 @@ export class UserDomainService {
     private userRepository: Repository<User>,
   ) {}
 
-  async create(createUserDTO: CreateUserDTO) {
-    const user = this.userRepository.create(createUserDTO);
+  async create(createUserDto: CreateUserDTO) {
+    const user = this.userRepository.create(createUserDto);
     return await this.userRepository.insert(user);
   }
 
-  async update(updateUserDTO: UpdateUserDTO) {
-    const user = this.userRepository.create(updateUserDTO);
-    return await this.userRepository.update(user.id, user);
+  async update(userId: string, updateUserDTO: UpdateUserDTO) {
+    return await this.userRepository.update(userId, updateUserDTO);
   }
 
   async remove(id: string) {
     return await this.userRepository.delete({ id });
   }
 
-  async paginate(userPageOptionsDTO: UserPageOptionsDTO) {
-    const where = userPageOptionsDTO.where
+  async paginate(userPageOptionsDto: UserPageOptionsDTO) {
+    const where = userPageOptionsDto.where
       ? combineObjectsArray(
-          Object.entries(userPageOptionsDTO.where).map(([k, v]) => {
+          Object.entries(userPageOptionsDto.where).map(([k, v]) => {
             const relationTrace: string = UserWhere[k];
             const obj = { [relationTrace]: changeToLike(v) };
 
@@ -48,12 +47,12 @@ export class UserDomainService {
       this.userRepository.count(),
       this.userRepository.find({
         order: {
-          [userPageOptionsDTO.orderBy]: userPageOptionsDTO.order,
+          [userPageOptionsDto.orderBy]: userPageOptionsDto.order,
         },
         where: where,
-        skip: userPageOptionsDTO.skip,
-        take: userPageOptionsDTO.take,
-        relations: userPageOptionsDTO.relations as unknown as Array<string>,
+        skip: userPageOptionsDto.skip,
+        take: userPageOptionsDto.take,
+        relations: userPageOptionsDto.relations as unknown as Array<string>,
       }),
     ]);
 
@@ -66,5 +65,13 @@ export class UserDomainService {
 
   async findOne(options: FindOneOptions<User>) {
     return await this.userRepository.findOne(options);
+  }
+
+  async findById(id: string) {
+    const user: User = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+    return user;
   }
 }

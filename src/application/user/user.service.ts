@@ -23,11 +23,13 @@ export class UserService {
     return await this.userDomainService.create(createUserDTO);
   }
 
-  async update(updateUserDTO: UpdateUserDTO) {
-    updateUserDTO.password = this.sessionService.encrypt(
-      updateUserDTO.password,
+  async update(userId: string, updateUserDto: UpdateUserDTO) {
+    //We search the user to check if it exists
+    const user: User = await this.userDomainService.findById(userId);
+    updateUserDto.password = this.sessionService.encrypt(
+      updateUserDto.password,
     );
-    return await this.userDomainService.update(updateUserDTO);
+    return await this.userDomainService.update(user.id, updateUserDto);
   }
 
   async remove(id: string) {
