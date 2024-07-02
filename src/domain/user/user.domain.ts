@@ -7,7 +7,7 @@ import {
   nestDottedObject,
 } from '@core/utils/utils';
 import { User, UserWhere } from '@domain/user/entities/user.entity';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 
@@ -23,9 +23,8 @@ export class UserDomainService {
     return await this.userRepository.insert(user);
   }
 
-  async update(updateUserDTO: UpdateUserDTO) {
-    const user = this.userRepository.create(updateUserDTO);
-    return await this.userRepository.update(user.id, user);
+  async update(userId: string, updateUserDTO: UpdateUserDTO) {
+    return await this.userRepository.update(userId, updateUserDTO);
   }
 
   async remove(id: string) {
@@ -66,5 +65,13 @@ export class UserDomainService {
 
   async findOne(options: FindOneOptions<User>) {
     return await this.userRepository.findOne(options);
+  }
+
+  async findById(id: string) {
+    const user: User = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+    return user;
   }
 }

@@ -148,10 +148,11 @@ export class UsersController {
     description: 'The request sent to the server is invalid or corrupted',
   })
   updateUser(
+    @UserToken() user: User,
     @Body()
     updateUserDto: UpdateUserDTO,
   ) {
-    return this.userService.update(updateUserDto);
+    return this.userService.update(user.id, updateUserDto);
   }
 
   //-----------------------------------------------DELETE :id-----------------------------------------------------------
