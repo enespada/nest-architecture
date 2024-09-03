@@ -16,24 +16,11 @@ export class UserService {
     private readonly sessionService: SessionService,
   ) {}
 
-  async create(createUserDTO: CreateUserDTO) {
-    createUserDTO.password = this.sessionService.encrypt(
-      createUserDTO.password,
+  async create(createUserDto: CreateUserDTO) {
+    createUserDto.password = this.sessionService.encrypt(
+      createUserDto.password,
     );
-    return await this.userDomainService.create(createUserDTO);
-  }
-
-  async update(userId: string, updateUserDto: UpdateUserDTO) {
-    //We search the user to check if it exists
-    const user: User = await this.userDomainService.findById(userId);
-    updateUserDto.password = this.sessionService.encrypt(
-      updateUserDto.password,
-    );
-    return await this.userDomainService.update(user.id, updateUserDto);
-  }
-
-  async remove(id: string) {
-    return await this.userDomainService.remove(id);
+    return await this.userDomainService.create(createUserDto);
   }
 
   async find(options?: FindManyOptions<User>) {
@@ -52,5 +39,18 @@ export class UserService {
       pageOptionsDto: userPageOptionsDto,
     });
     return new PageDTO(entities, pageMetaDto);
+  }
+
+  async update(userId: string, updateUserDto: UpdateUserDTO) {
+    //We search the user to check if it exists
+    const user: User = await this.userDomainService.findById(userId);
+    updateUserDto.password = this.sessionService.encrypt(
+      updateUserDto.password,
+    );
+    return await this.userDomainService.update(user.id, updateUserDto);
+  }
+
+  async remove(id: string) {
+    return await this.userDomainService.remove(id);
   }
 }

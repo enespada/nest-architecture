@@ -23,14 +23,6 @@ export class UserDomainService {
     return await this.userRepository.insert(user);
   }
 
-  async update(userId: string, updateUserDTO: UpdateUserDTO) {
-    return await this.userRepository.update(userId, updateUserDTO);
-  }
-
-  async remove(id: string) {
-    return await this.userRepository.delete({ id });
-  }
-
   async paginate(userPageOptionsDto: UserPageOptionsDTO) {
     const where = userPageOptionsDto.where
       ? combineObjectsArray(
@@ -73,5 +65,13 @@ export class UserDomainService {
       throw new BadRequestException('User not found');
     }
     return user;
+  }
+
+  async update(userId: string, updateUserDTO: UpdateUserDTO) {
+    return await this.userRepository.update(userId, updateUserDTO);
+  }
+
+  async remove(id: string) {
+    return await this.userRepository.delete({ id });
   }
 }

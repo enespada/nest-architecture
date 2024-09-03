@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { AwsDTO } from '@environments/dto/aws.dto';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AWSError, Credentials, S3 } from 'aws-sdk';
+import { AwsDTO } from '@environments/dto/aws.dto';
 import { S3_CONTENT_TYPE } from './constants/aws.constants';
 import { SignedUrlDTO } from './dto/signed-url.file.dto';
+import { GetObjectRequest, HeadObjectRequest } from 'aws-sdk/clients/s3';
 
 @Injectable()
 export class AwsService {
@@ -25,7 +26,7 @@ export class AwsService {
     });
   }
 
-  uploadFile(
+  async uploadFile(
     path: string,
     buffer: Buffer,
     ContentType?: string,
@@ -67,7 +68,7 @@ export class AwsService {
     });
   }
 
-  deleteFolder(
+  async deleteFolder(
     folderPath: string,
     contentType?: S3_CONTENT_TYPE,
   ): Promise<void> {
@@ -120,26 +121,57 @@ export class AwsService {
       throw new HttpException(awsError.message, HttpStatus.BAD_REQUEST);
   }
 
-  getUrl(path: string, contentType?: S3_CONTENT_TYPE) {
-    const s3Params = {
+  getStaticUrl(path: string, name?: string) {
+    // const filePath = `https://barberias.s3.amazonaws.com/${path}`;
+    // const signedUrlDTO: SignedUrlDTO = { url: filePath, key: name };
+    // return signedUrlDTO;
+  }
+
+  async getUrl(
+    path: string,
+    contentType?: S3_CONTENT_TYPE,
+  ): Promise<SignedUrlDTO> {
+    const s3Params: GetObjectRequest = {
       Bucket: this.awsConfig.bucket,
       Key: path,
       ResponseContentType: contentType,
     };
-    this.s3.getSignedUrl(
-      'getObject',
-      s3Params,
-      (error: AWSError, url: string) => {
-        if (error) this.handleAWSError(error);
-        else {
-          const signedUrlDTO: SignedUrlDTO = { url };
-          return signedUrlDTO;
-        }
-      },
-    );
+
+    // Verificar si el objeto existe
+    const headParams: HeadObjectRequest = {
+      Bucket: this.awsConfig.bucket,
+      Key: path,
+    };
+
+    try {
+      await this.s3.headObject(headParams).promise();
+    } catch (error) {
+      if (error.code === 'NotFound') {
+        console.error('Object not found');
+        return null;
+      } else {
+        console.error('Object not verified: ', error);
+        throw error;
+      }
+    }
+    return new Promise((resolve, reject) => {
+      this.s3.getSignedUrl(
+        'getObject',
+        s3Params,
+        (error: AWSError, data: string) => {
+          if (error) {
+            resolve(null);
+            // reject(error);
+          } else {
+            const signedUrlDTO: SignedUrlDTO = { url: data, key: path };
+            resolve(signedUrlDTO);
+          }
+        },
+      );
+    });
   }
 
-  listUrl(
+  async listUrl(
     path: string,
     contentType?: S3_CONTENT_TYPE,
   ): Promise<SignedUrlDTO[]> {
@@ -167,7 +199,6 @@ export class AwsService {
               // });
               const fileName =
                 obj.Key.split('/')[obj.Key.split('/').length - 1];
-
               signedUrls.push({
                 url: `${staticPath}${fileName}`,
                 key: obj.Key,
