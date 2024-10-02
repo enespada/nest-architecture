@@ -1,5 +1,5 @@
 import { RolesEnum } from '@core/constants/constants';
-import { User } from '@domain/user/entities/user.entity';
+import { User } from '@domain/user/models/user.model';
 import {
   createParamDecorator,
   ExecutionContext,

@@ -1,4 +1,3 @@
-import { User } from '@domain/user/entities/user.entity';
 import { UserToken, Token } from '@core/decorators/decorators';
 import { ExceptionFilter } from '@core/exceptions/global.exception';
 import { JwtRefreshGuard } from '@core/middlewares/jwt/refresh/jwt-refresh.guard';
@@ -22,6 +21,7 @@ import {
 import { LoginDTO } from './dto/login.dto';
 import { AuthService } from '@application/auth/auth.service';
 import { RegisterDTO } from './dto/register.dto';
+import { User } from '@domain/user/models/user.model';
 
 @Controller('auth')
 @UseFilters(ExceptionFilter)

@@ -34,3 +34,15 @@ export abstract class AbstractEntity {
     this.updatedAt = Math.floor(Date.now() / 1000);
   }
 }
+
+export enum AbstractWhere {
+  id = 'id',
+  createdAt = 'createdAt',
+  updatedAt = 'updatedAt',
+}
+
+export enum AbstractOrderBy {
+  id = 'id',
+  createdAt = 'createdAt',
+  updatedAt = 'updatedAt',
+}

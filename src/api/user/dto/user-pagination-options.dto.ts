@@ -1,12 +1,12 @@
 import {
-  User,
   UserOrderBy,
   UserRelations,
-} from '@domain/user/entities/user.entity';
+} from '@infrastructure/user/entities/user.entity';
 import { PageOptionsDTO as PageOptionsDTO } from '@core/database/dto/pagination-options.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsEnum, IsOptional } from 'class-validator';
+import { User } from '@domain/user/models/user.model';
 
 export class UserPageOptionsDTO extends PageOptionsDTO {
   @ApiProperty({ enum: UserOrderBy, default: UserOrderBy.id, required: false })

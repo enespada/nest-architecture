@@ -5,7 +5,7 @@ import { TokenPayload } from '../dto/token.dto';
 import environment from '@environments/environment';
 import { ErrorDTO } from '@core/response/dto/error.dto';
 import { UserService } from '@application/user/user.service';
-import { User } from '@domain/user/entities/user.entity';
+import { User } from '@domain/user/models/user.model';
 
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(

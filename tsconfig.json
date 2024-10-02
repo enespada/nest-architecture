@@ -19,6 +19,7 @@
     "noFallthroughCasesInSwitch": false,
     "resolveJsonModule": true,
     "paths": {
+      "@infrastructure/*": ["src/infrastructure/*"],
       "@domain/*": ["src/domain/*"],
       "@controller/*": ["src/api/*"],
       "@application/*": ["src/application/*"],

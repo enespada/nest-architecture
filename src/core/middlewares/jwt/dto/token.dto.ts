@@ -1,4 +1,4 @@
-import { User } from '@domain/user/entities/user.entity';
+import { User } from '@domain/user/models/user.model';
 
 export interface TokenPayload {
   user: User;

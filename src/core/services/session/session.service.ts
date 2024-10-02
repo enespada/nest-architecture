@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as jwt from 'jsonwebtoken';
 import { AES, enc } from 'crypto-js';
-import { User } from '@domain/user/entities/user.entity';
+import { User } from '@domain/user/models/user.model';
 
 @Injectable()
 export class SessionService {
