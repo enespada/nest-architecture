@@ -43,7 +43,7 @@ import { UserPageOptionsDTO } from './dto/user-pagination-options.dto';
 @ApiUnauthorizedResponse({
   description: 'Bearer token must be a valid Token',
 })
-export class UsersController {
+export class UserController {
   constructor(private readonly userService: UserService) {}
 
   //-----------------------------------------------POST-----------------------------------------------------------
@@ -131,7 +131,7 @@ export class UsersController {
     status: HttpStatus.NOT_FOUND,
   })
   get(@Param('id', ParseUUIDPipe) id: string) {
-    return this.userService.findOne({ where: { id } });
+    return this.userService.findById(id);
   }
 
   //-------------------------------------------------PUT-------------------------------------------------------------

@@ -10,17 +10,18 @@ import { User } from '@domain/user/models/user.model';
 import { UserRepository } from '@domain/user/user.repository';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserWhere } from './entities/user.entity';
+import { UserEntity, UserWhere } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { FindManyOptions } from '@domain/user/interfaces/find-many-options.interface';
 import { FindOneOptions } from '@domain/user/interfaces/find-one-options.interface';
 import { FindOptionsMapper } from '@infrastructure/utils/find-options-mapper.util';
+import { UserMapper } from './mappers/user.mapper';
 
 @Injectable()
 export class UserRepositoryImpl implements UserRepository {
   constructor(
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
   ) {}
 
   async create(createUserPayloadDto: CreateUserPayloadDTO): Promise<User> {
@@ -59,21 +60,30 @@ export class UserRepositoryImpl implements UserRepository {
   async find(options: FindManyOptions<User>): Promise<User[]> {
     const typeOrmOptions =
       FindOptionsMapper.mapFindManyOptionsToTypeOrmOptions(options);
-    return await this.userRepository.find(typeOrmOptions);
+    const userEntities: UserEntity[] =
+      await this.userRepository.find(typeOrmOptions);
+    return userEntities.map((ue: UserEntity) => UserMapper.entityToModel(ue));
   }
 
   async findOne(options: FindOneOptions<User>): Promise<User> {
     const typeOrmOptions =
       FindOptionsMapper.mapFindOneOptionsToTypeOrmOptions(options);
-    return await this.userRepository.findOne(typeOrmOptions);
+    const userEntity: UserEntity =
+      await this.userRepository.findOne(typeOrmOptions);
+    if (!userEntity) {
+      throw new BadRequestException('User not found');
+    }
+    return UserMapper.entityToModel(userEntity);
   }
 
   async findById(id: string): Promise<User> {
-    const user: User = await this.userRepository.findOne({ where: { id } });
-    if (!user) {
+    const userEntity: UserEntity = await this.userRepository.findOne({
+      where: { id },
+    });
+    if (!userEntity) {
       throw new BadRequestException('User not found');
     }
-    return user;
+    return UserMapper.entityToModel(userEntity);
   }
 
   async update(

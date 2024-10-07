@@ -4,25 +4,24 @@ import { PasswordEncrypted } from '@core/middlewares/validation/password.validat
 import { LoggerModule } from '@core/services/logger/logger.module';
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from '../../domain/user/models/user.model';
-import { UsersController } from './user.controller';
+import { UserController } from './user.controller';
 import { SessionModule } from '@core/services/session/session.module';
 import { UserRepositoryImpl } from '@infrastructure/user/user.repository.impl';
+import { UserEntity } from '@infrastructure/user/entities/user.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([UserEntity]),
     SessionModule,
     LoggerModule,
     forwardRef(() => JwtModule),
   ],
-  controllers: [UsersController],
+  controllers: [UserController],
   providers: [
     UserService,
     { provide: 'UserRepository', useClass: UserRepositoryImpl },
-    UserRepositoryImpl,
     PasswordEncrypted,
   ],
-  exports: [UserService, UserRepositoryImpl],
+  exports: [UserService, 'UserRepository'],
 })
 export class UserModule {}

@@ -13,7 +13,7 @@ export class User {
     this.password = password;
   }
 
-  getFullName(): string {
+  get getFullName(): string {
     return `${this.firstName} ${this.lastName}`;
   }
 }

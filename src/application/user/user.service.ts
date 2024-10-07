@@ -33,6 +33,10 @@ export class UserService {
     return await this.userRepository.findOne(options ?? {});
   }
 
+  async findById(userId: string) {
+    return await this.userRepository.findById(userId);
+  }
+
   async paginate(userPageOptionsDto: UserPageOptionsDTO) {
     const { totalItems, entities } =
       await this.userRepository.paginate(userPageOptionsDto);
@@ -44,7 +48,7 @@ export class UserService {
   }
 
   async update(userId: string, updateUserDto: UpdateUserDTO) {
-    //We search the user to check if it exists
+    // We search the user to check if it exists
     const user: User = await this.userRepository.findById(userId);
     updateUserDto.password = this.sessionService.encrypt(
       updateUserDto.password,
@@ -53,6 +57,8 @@ export class UserService {
   }
 
   async remove(id: string) {
+    // We search the user to check if it exists
+    await this.userRepository.findById(id);
     return await this.userRepository.remove(id);
   }
 }

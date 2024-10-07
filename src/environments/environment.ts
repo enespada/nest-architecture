@@ -76,7 +76,7 @@ export default () => ({
     password: process.env.DATABASE_PASSWORD,
     database: process.env.DATABASE_NAME,
     logging: env === ENV.DEV,
-    entities: [join(__dirname, '..', `domain/**/**.entity{.ts,.js}`)],
+    entities: [join(__dirname, '..', `infrastructure/**/**.entity{.ts,.js}`)],
     synchronize: env === ENV.DEV,
   } as DatabaseDTO,
 });
