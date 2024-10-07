@@ -29,11 +29,11 @@ import {
   ApiUnauthorizedResponse,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { UpdateUserDTO } from './dto/update-user.dto';
+import { UpdateUserDTO } from '../../application/user/dto/update-user.dto';
 import { User } from '../../domain/user/models/user.model';
 import { UserToken } from '@core/decorators/decorators';
-import { CreateUserDTO } from './dto/create-user.dto';
-import { UserPageOptionsDTO } from './dto/user-pagination-options.dto';
+import { CreateUserDTO } from '../../application/user/dto/create-user.dto';
+import { UserPageOptionsDTO } from '../../application/user/dto/user-pagination-options.dto';
 
 @Controller('users')
 @ApiTags(`Users`)

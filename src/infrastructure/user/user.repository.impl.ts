@@ -1,6 +1,6 @@
-import { CreateUserPayloadDTO } from '@controller/user/dto/create-user-payload.dto';
-import { UpdateUserPayloadDTO } from '@controller/user/dto/update-user-payload.dto';
-import { UserPageOptionsDTO } from '@controller/user/dto/user-pagination-options.dto';
+import { CreateUserPayloadDTO } from '@application/user/dto/create-user-payload.dto';
+import { UpdateUserPayloadDTO } from '@application/user/dto/update-user-payload.dto';
+import { UserPageOptionsDTO } from '@application/user/dto/user-pagination-options.dto';
 import {
   changeToLike,
   combineObjectsArray,
@@ -12,9 +12,11 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity, UserWhere } from './entities/user.entity';
 import { Repository } from 'typeorm';
-import { FindManyOptions } from '@domain/user/interfaces/find-many-options.interface';
-import { FindOneOptions } from '@domain/user/interfaces/find-one-options.interface';
-import { FindOptionsMapper } from '@infrastructure/utils/find-options-mapper.util';
+import {
+  FindManyOptions,
+  FindOneOptions,
+} from '@domain/shared/interfaces/find-options.interface';
+import { FindOptionsMapper } from '@infrastructure/shared/mappers/find-options.mapper';
 import { UserMapper } from './mappers/user.mapper';
 
 @Injectable()
@@ -40,9 +42,14 @@ export class UserRepositoryImpl implements UserRepository {
           }),
         )
       : {};
-
     const [totalItems, entities] = await Promise.all([
-      this.userRepository.count(),
+      this.userRepository.count({
+        order: {
+          [userPageOptionsDto.orderBy]: userPageOptionsDto.order,
+        },
+        where: where,
+        relations: userPageOptionsDto.relations as unknown as Array<string>,
+      }),
       this.userRepository.find({
         order: {
           [userPageOptionsDto.orderBy]: userPageOptionsDto.order,

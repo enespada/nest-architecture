@@ -6,3 +6,9 @@ export interface FindManyOptions<T> {
   skip?: number;
   select?: (keyof T)[];
 }
+
+export interface FindOneOptions<T> {
+  where?: Partial<T>;
+  relations?: string[];
+  select?: (keyof T)[];
+}

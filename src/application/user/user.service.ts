@@ -1,14 +1,18 @@
-import { CreateUserDTO } from '@controller/user/dto/create-user.dto';
-import { UpdateUserDTO } from '@controller/user/dto/update-user.dto';
-import { UserPageOptionsDTO } from '@controller/user/dto/user-pagination-options.dto';
+import { CreateUserDTO } from '@application/user/dto/create-user.dto';
+import { UpdateUserDTO } from '@application/user/dto/update-user.dto';
+import { UserPageOptionsDTO } from '@application/user/dto/user-pagination-options.dto';
 import { PageDTO } from '@core/database/dto/page.dto';
 import { PageMetaDTO } from '@core/database/dto/pagination-meta.dto';
 import { Inject, Injectable } from '@nestjs/common';
 import { SessionService } from '@core/services/session/session.service';
 import { UserRepository } from '@domain/user/user.repository';
 import { User } from '@domain/user/models/user.model';
-import { FindOneOptions } from '@domain/user/interfaces/find-one-options.interface';
-import { FindManyOptions } from '@domain/user/interfaces/find-many-options.interface';
+import { UpdateUserPayloadDTO } from '@application/user/dto/update-user-payload.dto';
+import {
+  FindManyOptions,
+  FindOneOptions,
+} from '@domain/shared/interfaces/find-options.interface';
+import { CreateUserPayloadDTO } from './dto/create-user-payload.dto';
 
 @Injectable()
 export class UserService {
@@ -19,10 +23,11 @@ export class UserService {
   ) {}
 
   async create(createUserDto: CreateUserDTO) {
-    createUserDto.password = this.sessionService.encrypt(
-      createUserDto.password,
+    const createUserPayloadDto: CreateUserPayloadDTO = { ...createUserDto };
+    createUserPayloadDto.password = this.sessionService.encrypt(
+      createUserPayloadDto.password,
     );
-    return await this.userRepository.create(createUserDto);
+    return await this.userRepository.create(createUserPayloadDto);
   }
 
   async find(options?: FindManyOptions<User>) {
@@ -49,11 +54,14 @@ export class UserService {
 
   async update(userId: string, updateUserDto: UpdateUserDTO) {
     // We search the user to check if it exists
-    const user: User = await this.userRepository.findById(userId);
+    await this.userRepository.findById(userId);
     updateUserDto.password = this.sessionService.encrypt(
       updateUserDto.password,
     );
-    return await this.userRepository.update(user.id, updateUserDto);
+    const updateUserPayloadDto: Partial<UpdateUserPayloadDTO> = {
+      ...updateUserDto,
+    };
+    return await this.userRepository.update(userId, updateUserPayloadDto);
   }
 
   async remove(id: string) {

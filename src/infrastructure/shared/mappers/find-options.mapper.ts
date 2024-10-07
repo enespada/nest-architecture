@@ -1,12 +1,13 @@
-import { FindManyOptions } from '@domain/user/interfaces/find-many-options.interface';
-import { FindOneOptions } from '@domain/user/interfaces/find-one-options.interface';
+import {
+  FindManyOptions,
+  FindOneOptions,
+} from '@domain/shared/interfaces/find-options.interface';
 
 export class FindOptionsMapper {
   static mapFindManyOptionsToTypeOrmOptions<T>(
     options: FindManyOptions<T>,
   ): any {
     const where = FindOptionsMapper.transformWhereClause(options.where);
-
     return {
       where,
       relations: options.relations,
@@ -21,7 +22,6 @@ export class FindOptionsMapper {
 
   static mapFindOneOptionsToTypeOrmOptions<T>(options: FindOneOptions<T>): any {
     const where = FindOptionsMapper.transformWhereClause(options.where);
-
     return {
       where,
       relations: options.relations,
@@ -34,7 +34,6 @@ export class FindOptionsMapper {
   static transformWhereClause<T>(where: Partial<T>): Record<string, any> {
     if (!where) return {};
     const transformedWhere: Record<string, any> = {};
-
     for (const key in where) {
       if (typeof where[key] === 'object' && where[key] !== null) {
         transformedWhere[key as string] = { ...where[key] };
@@ -42,7 +41,6 @@ export class FindOptionsMapper {
         transformedWhere[key as string] = where[key];
       }
     }
-
     return transformedWhere;
   }
 

@@ -1,4 +1,4 @@
-import { CreateUserDTO } from '@controller/user/dto/create-user.dto';
+import { CreateUserDTO } from '@application/user/dto/create-user.dto';
 import {
   AbstractEntity,
   AbstractOrderBy,
