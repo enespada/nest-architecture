@@ -1,6 +1,6 @@
-import { CreateUserPayloadDTO } from '@application/user/dto/create-user-payload.dto';
-import { UpdateUserPayloadDTO } from '@application/user/dto/update-user-payload.dto';
-import { UserPageOptionsDTO } from '@application/user/dto/user-pagination-options.dto';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import {
   changeToLike,
   combineObjectsArray,
@@ -8,10 +8,10 @@ import {
 } from '@core/utils/utils';
 import { User } from '@domain/user/models/user.model';
 import { UserRepository } from '@domain/user/user.repository';
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { CreateUserPayloadDTO } from '@application/user/dto/create-user-payload.dto';
+import { UpdateUserPayloadDTO } from '@application/user/dto/update-user-payload.dto';
+import { UserPageOptionsDTO } from '@application/user/dto/user-pagination-options.dto';
 import { UserEntity, UserWhere } from './entities/user.entity';
-import { Repository } from 'typeorm';
 import {
   FindManyOptions,
   FindOneOptions,

@@ -1,11 +1,10 @@
-import { CreateUserDTO } from '@application/user/dto/create-user.dto';
+import { ApiProperty } from '@nestjs/swagger';
+import { Entity, Column } from 'typeorm';
 import {
   AbstractEntity,
   AbstractOrderBy,
   AbstractWhere,
 } from '@core/database/entity/abstract.entity';
-import { ApiProperty } from '@nestjs/swagger';
-import { Entity, Column } from 'typeorm';
 
 @Entity()
 export class UserEntity extends AbstractEntity {
@@ -23,7 +22,7 @@ export class UserEntity extends AbstractEntity {
   password: string;
 }
 
-export const defaultUserValues: Array<CreateUserDTO> = [];
+export const defaultUserValues: Array<UserEntity> = [];
 
 //--------------------------------------------Where-------------------------------------------------------------
 enum UserWhereEnum {

@@ -22,7 +22,7 @@ export class UserService {
     private readonly sessionService: SessionService,
   ) {}
 
-  async create(createUserDto: CreateUserDTO) {
+  async create(createUserDto: CreateUserDTO): Promise<User> {
     const createUserPayloadDto: CreateUserPayloadDTO = { ...createUserDto };
     createUserPayloadDto.password = this.sessionService.encrypt(
       createUserPayloadDto.password,
@@ -30,15 +30,15 @@ export class UserService {
     return await this.userRepository.create(createUserPayloadDto);
   }
 
-  async find(options?: FindManyOptions<User>) {
+  async find(options?: FindManyOptions<User>): Promise<User[]> {
     return await this.userRepository.find(options ?? {});
   }
 
-  async findOne(options?: FindOneOptions<User>) {
+  async findOne(options?: FindOneOptions<User>): Promise<User> {
     return await this.userRepository.findOne(options ?? {});
   }
 
-  async findById(userId: string) {
+  async findById(userId: string): Promise<User> {
     return await this.userRepository.findById(userId);
   }
 
@@ -52,7 +52,7 @@ export class UserService {
     return new PageDTO(entities, pageMetaDto);
   }
 
-  async update(userId: string, updateUserDto: UpdateUserDTO) {
+  async update(userId: string, updateUserDto: UpdateUserDTO): Promise<User> {
     // We search the user to check if it exists
     await this.userRepository.findById(userId);
     updateUserDto.password = this.sessionService.encrypt(
@@ -64,7 +64,7 @@ export class UserService {
     return await this.userRepository.update(userId, updateUserPayloadDto);
   }
 
-  async remove(id: string) {
+  async remove(id: string): Promise<void> {
     // We search the user to check if it exists
     await this.userRepository.findById(id);
     return await this.userRepository.remove(id);
