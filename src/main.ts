@@ -48,7 +48,7 @@ async function createNestServer(expressInstance?: Express): Promise<void> {
   const swaggerConfig = configService.get('swagger');
 
   // Swagger Config
- setupSwagger(app, httpConfig, swaggerConfig);
+  setupSwagger(app, httpConfig, swaggerConfig);
 
   // Configure security middlewares
   app.enableCors();
