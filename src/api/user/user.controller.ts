@@ -60,6 +60,7 @@ export class UserController {
 
   //-----------------------------------------------GET-----------------------------------------------------------
   @Get()
+  // @UseGuards(JwtUserGuard)
   @ApiOperation({ summary: 'Gets all users' })
   @ApiOkResponse({
     type: Array<User>,
@@ -91,7 +92,7 @@ export class UserController {
 
   //-----------------------------------------------GET paginate-----------------------------------------------------------
   @Get('paginate')
-  @UseGuards(JwtUserGuard)
+  // @UseGuards(JwtUserGuard)
   @ApiOperation({ summary: 'Paginate users' })
   @ApiExtraModels(User)
   @ApiQuery({

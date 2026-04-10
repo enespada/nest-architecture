@@ -1,12 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
-import { IsEnum, IsOptional } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import { IsEnum, IsOptional, ValidateNested } from 'class-validator';
 import {
   UserOrderBy,
   UserRelations,
 } from '@infrastructure/user/entities/user.entity';
 import { PageOptionsDTO } from '@core/database/dto/pagination-options.dto';
-import { User } from '@domain/user/models/user.model';
+import { UserWhereDTO } from './user-where.dto';
 
 export class UserPageOptionsDTO extends PageOptionsDTO {
   @ApiProperty({ enum: UserOrderBy, default: UserOrderBy.id, required: false })
@@ -25,7 +25,9 @@ export class UserPageOptionsDTO extends PageOptionsDTO {
   @Transform((data) => (Array.isArray(data.value) ? data.value : [data.value]))
   readonly relations?: Array<UserRelations> = [];
 
-  @ApiProperty({ required: false })
+  @ApiProperty({ type: UserWhereDTO, required: false })
+  @ValidateNested()
+  @Type(() => UserWhereDTO)
   @IsOptional()
-  where?: Partial<User>;
+  where?: UserWhereDTO;
 }

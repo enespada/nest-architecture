@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import {
   changeToLike,
   combineObjectsArray,
@@ -33,30 +33,49 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   async paginate(userPageOptionsDto: UserPageOptionsDTO): Promise<any> {
-    const where = userPageOptionsDto.where
-      ? combineObjectsArray(
-          Object.entries(userPageOptionsDto.where).map(([k, v]) => {
-            const relationTrace: string = UserWhere[k];
-            const obj = { [relationTrace]: changeToLike(v) };
-            return nestDottedObject(obj);
-          }),
-        )
-      : {};
+    console.log(userPageOptionsDto.where);
+    const { fullName, userName, ...standardWhere } =
+      (userPageOptionsDto.where ?? {}) as UserPageOptionsDTO['where'] & {
+        fullName?: string;
+        userName?: string;
+      };
+    const nameFilter = fullName ?? userName;
+
+    // Build base AND conditions from real entity fields
+    const baseWhere =
+      Object.keys(standardWhere).length > 0
+        ? combineObjectsArray(
+            Object.entries(standardWhere).map(([k, v]) => {
+              const relationTrace: string = UserWhere[k];
+              const obj = { [relationTrace]: changeToLike(v) };
+              return nestDottedObject(obj);
+            }),
+          )
+        : {};
+
+    // fullName and userName resolve to OR(firstName LIKE, lastName LIKE)
+    const finalWhere = nameFilter
+      ? [
+          { ...baseWhere, firstName: Like(`%${nameFilter}%`) },
+          { ...baseWhere, lastName: Like(`%${nameFilter}%`) },
+        ]
+      : baseWhere;
+
     const [totalItems, entities] = await Promise.all([
       this.userRepository.count({
         order: {
           [userPageOptionsDto.orderBy]: userPageOptionsDto.order,
         },
-        where: where,
+        where: finalWhere,
         relations: userPageOptionsDto.relations as unknown as Array<string>,
       }),
       this.userRepository.find({
         order: {
           [userPageOptionsDto.orderBy]: userPageOptionsDto.order,
         },
-        where: where,
+        where: finalWhere,
         skip: userPageOptionsDto.skip,
-        take: userPageOptionsDto.take,
+        take: userPageOptionsDto.limit,
         relations: userPageOptionsDto.relations as unknown as Array<string>,
       }),
     ]);

@@ -22,7 +22,7 @@ export class AuthService {
       where: {
         email: loginDto.email,
       },
-      select: ['password'] as (keyof User)[],
+      select: ['id', 'password'] as (keyof User)[],
     });
 
     if (!user)
@@ -42,7 +42,7 @@ export class AuthService {
         HttpStatus.FORBIDDEN,
       );
 
-    return this.refresh(user);
+    return this.refresh({ id: user.id } as User);
   }
 
   refresh(user: User, token?: string) {
