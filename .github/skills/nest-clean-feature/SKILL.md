@@ -27,4 +27,6 @@ user-invocable: true
 
 - Use path aliases from `tsconfig.json`.
 - Keep controllers thin and Swagger docs aligned with the real contract.
+- In `*controller.ts`, keep the project's separator comment style before each endpoint block.
+- In `*repository.impl.ts`, name injected `Repository<Entity>` fields after the entity in `lowerCamelCase`.
 - Write code comments in English only.

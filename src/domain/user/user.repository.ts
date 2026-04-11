@@ -5,14 +5,29 @@ import { User } from './models/user.model';
 import {
   FindManyOptions,
   FindOneOptions,
-} from '../shared/interfaces/find-options.interface';
+} from '@domain/shared/interfaces/find-options.interface';
 
 export interface UserRepository {
   create(createUserPayloadDto: CreateUserPayloadDTO): Promise<User>;
-  paginate(userPageOptionsDto: UserPageOptionsDTO): Promise<any>;
+  /**
+   * Returns a paginated result. When loggedUserId is provided the repository
+   * must populate isBlockedByLogged and blockedLogged on each returned User.
+   */
+  paginate(
+    userPageOptionsDto: UserPageOptionsDTO,
+    loggedUserId?: string,
+  ): Promise<any>;
   find(options: FindManyOptions<User>): Promise<User[]>;
-  findOne(options: FindOneOptions<User>): Promise<User>;
-  findById(id: string): Promise<User>;
+  /**
+   * Finds a single user. When loggedUserId is provided the repository
+   * must populate isBlockedByLogged and blockedLogged on the returned User.
+   */
+  findOne(options: FindOneOptions<User>, loggedUserId?: string): Promise<User>;
+  /**
+   * Finds a user by primary key. When loggedUserId is provided the repository
+   * must populate isBlockedByLogged and blockedLogged on the returned User.
+   */
+  findById(id: string, loggedUserId?: string): Promise<User>;
   update(
     userId: string,
     updateUserPayloadDto: UpdateUserPayloadDTO,

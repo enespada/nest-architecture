@@ -29,11 +29,11 @@ import {
   ApiUnauthorizedResponse,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { UpdateUserDTO } from '../../application/user/dto/update-user.dto';
-import { User } from '../../domain/user/models/user.model';
+import { UpdateUserDTO } from '@application/user/dto/update-user.dto';
+import { CreateUserDTO } from '@application/user/dto/create-user.dto';
+import { UserPageOptionsDTO } from '@application/user/dto/user-pagination-options.dto';
+import { User } from '@domain/user/models/user.model';
 import { UserToken } from '@core/decorators/decorators';
-import { CreateUserDTO } from '../../application/user/dto/create-user.dto';
-import { UserPageOptionsDTO } from '../../application/user/dto/user-pagination-options.dto';
 
 @Controller('users')
 @ApiTags(`Users`)
@@ -85,14 +85,12 @@ export class UserController {
     status: HttpStatus.NOT_FOUND,
   })
   me(@UserToken() user: User) {
-    return this.userService.findOne({
-      where: { id: user.id },
-    });
+    return this.userService.findOne({ where: { id: user.id } }, user.id);
   }
 
   //-----------------------------------------------GET paginate-----------------------------------------------------------
   @Get('paginate')
-  // @UseGuards(JwtUserGuard)
+  @UseGuards(JwtUserGuard)
   @ApiOperation({ summary: 'Paginate users' })
   @ApiExtraModels(User)
   @ApiQuery({
@@ -108,10 +106,14 @@ export class UserController {
   @ApiOkResponse({
     type: User,
     isArray: true,
-    description: 'Retrieves an array of users',
+    description:
+      'Retrieves a paginated list of users. Each user may include isBlockedByLogged and blockedLogged flags computed against the authenticated user.',
   })
-  paginate(@Query() userPageOptionsDto: UserPageOptionsDTO) {
-    return this.userService.paginate(userPageOptionsDto);
+  paginate(
+    @UserToken() user: User,
+    @Query() userPageOptionsDto: UserPageOptionsDTO,
+  ) {
+    return this.userService.paginate(userPageOptionsDto, user.id);
   }
 
   //-----------------------------------------------GET :id-----------------------------------------------------------
@@ -131,8 +133,8 @@ export class UserController {
     description: 'There is no user with the given id',
     status: HttpStatus.NOT_FOUND,
   })
-  get(@Param('id', ParseUUIDPipe) id: string) {
-    return this.userService.findById(id);
+  get(@UserToken() user: User, @Param('id', ParseUUIDPipe) id: string) {
+    return this.userService.findById(id, user.id);
   }
 
   //-------------------------------------------------PUT-------------------------------------------------------------

@@ -34,17 +34,25 @@ export class UserService {
     return await this.userRepository.find(options ?? {});
   }
 
-  async findOne(options?: FindOneOptions<User>): Promise<User> {
-    return await this.userRepository.findOne(options ?? {});
+  async findOne(
+    options?: FindOneOptions<User>,
+    loggedUserId?: string,
+  ): Promise<User> {
+    return await this.userRepository.findOne(options ?? {}, loggedUserId);
   }
 
-  async findById(userId: string): Promise<User> {
-    return await this.userRepository.findById(userId);
+  async findById(userId: string, loggedUserId?: string): Promise<User> {
+    return await this.userRepository.findById(userId, loggedUserId);
   }
 
-  async paginate(userPageOptionsDto: UserPageOptionsDTO) {
-    const { totalItems, entities } =
-      await this.userRepository.paginate(userPageOptionsDto);
+  async paginate(
+    userPageOptionsDto: UserPageOptionsDTO,
+    loggedUserId?: string,
+  ) {
+    const { totalItems, entities } = await this.userRepository.paginate(
+      userPageOptionsDto,
+      loggedUserId,
+    );
     const pageMetaDto = new PageMetaDTO({
       totalItems,
       pageOptionsDto: userPageOptionsDto,

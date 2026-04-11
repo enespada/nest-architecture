@@ -1,4 +1,5 @@
 import { AuthModule } from '@controller/auth/auth.module';
+import { UserBlockedModule } from '@controller/user-blocked/user-blocked.module';
 import { UserModule } from '@controller/user/user.module';
 import { AppLoggerMiddleware } from '@core/middlewares/logger.middleware';
 import { LoggerModule } from '@core/services/logger/logger.module';
@@ -16,6 +17,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       inject: [ConfigService],
     }),
     UserModule,
+    UserBlockedModule,
     AuthModule,
     LoggerModule,
   ],

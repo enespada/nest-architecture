@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { In, Like, Repository } from 'typeorm';
 import {
   changeToLike,
   combineObjectsArray,
@@ -18,6 +18,7 @@ import {
 } from '@domain/shared/interfaces/find-options.interface';
 import { FindOptionsMapper } from '@infrastructure/shared/mappers/find-options.mapper';
 import { UserMapper } from './mappers/user.mapper';
+import { UserBlockedEntity } from '@infrastructure/user-blocked/entities/user-blocked.entity';
 
 @Injectable()
 export class UserRepositoryImpl implements UserRepository {
@@ -32,7 +33,10 @@ export class UserRepositoryImpl implements UserRepository {
     return await this.findById(user.id);
   }
 
-  async paginate(userPageOptionsDto: UserPageOptionsDTO): Promise<any> {
+  async paginate(
+    userPageOptionsDto: UserPageOptionsDTO,
+    loggedUserId?: string,
+  ): Promise<any> {
     console.log(userPageOptionsDto.where);
     const { fullName, userName, ...standardWhere } =
       (userPageOptionsDto.where ?? {}) as UserPageOptionsDTO['where'] & {
@@ -80,7 +84,37 @@ export class UserRepositoryImpl implements UserRepository {
       }),
     ]);
 
-    return { totalItems, entities };
+    if (!loggedUserId || entities.length === 0) {
+      return {
+        totalItems,
+        entities: entities.map((e) => UserMapper.entityToModel(e)),
+      };
+    }
+
+    // Batch-fetch block relations for all user IDs in this page
+    const userIds = entities.map((e) => e.id);
+    const [blockedByLoggedRows, blockedLoggedRows] = await Promise.all([
+      this.userRepository.manager.find(UserBlockedEntity, {
+        where: { blockerId: loggedUserId, blockedId: In(userIds) },
+      }),
+      this.userRepository.manager.find(UserBlockedEntity, {
+        where: { blockerId: In(userIds), blockedId: loggedUserId },
+      }),
+    ]);
+    const blockedByLoggedSet = new Set(
+      blockedByLoggedRows.map((r) => r.blockedId),
+    );
+    const blockedLoggedSet = new Set(blockedLoggedRows.map((r) => r.blockerId));
+
+    return {
+      totalItems,
+      entities: entities.map((e) =>
+        UserMapper.entityToModel(e, {
+          isBlockedByLogged: blockedByLoggedSet.has(e.id),
+          blockedLogged: blockedLoggedSet.has(e.id),
+        }),
+      ),
+    };
   }
 
   async find(options: FindManyOptions<User>): Promise<User[]> {
@@ -91,7 +125,10 @@ export class UserRepositoryImpl implements UserRepository {
     return userEntities.map((ue: UserEntity) => UserMapper.entityToModel(ue));
   }
 
-  async findOne(options: FindOneOptions<User>): Promise<User> {
+  async findOne(
+    options: FindOneOptions<User>,
+    loggedUserId?: string,
+  ): Promise<User> {
     const typeOrmOptions =
       FindOptionsMapper.mapFindOneOptionsToTypeOrmOptions(options);
     const userEntity: UserEntity =
@@ -99,17 +136,25 @@ export class UserRepositoryImpl implements UserRepository {
     if (!userEntity) {
       throw new BadRequestException('User not found');
     }
-    return UserMapper.entityToModel(userEntity);
+    if (!loggedUserId) {
+      return UserMapper.entityToModel(userEntity);
+    }
+    const flags = await this.resolveBlockFlags(userEntity.id, loggedUserId);
+    return UserMapper.entityToModel(userEntity, flags);
   }
 
-  async findById(id: string): Promise<User> {
+  async findById(id: string, loggedUserId?: string): Promise<User> {
     const userEntity: UserEntity = await this.userRepository.findOne({
       where: { id },
     });
     if (!userEntity) {
       throw new BadRequestException('User not found');
     }
-    return UserMapper.entityToModel(userEntity);
+    if (!loggedUserId) {
+      return UserMapper.entityToModel(userEntity);
+    }
+    const flags = await this.resolveBlockFlags(id, loggedUserId);
+    return UserMapper.entityToModel(userEntity, flags);
   }
 
   async update(
@@ -122,5 +167,27 @@ export class UserRepositoryImpl implements UserRepository {
 
   async remove(id: string): Promise<void> {
     await this.userRepository.delete({ id });
+  }
+
+  /**
+   * Runs two parallel count queries to determine block flags between
+   * a target user and the authenticated user.
+   */
+  private async resolveBlockFlags(
+    userId: string,
+    loggedUserId: string,
+  ): Promise<{ isBlockedByLogged: boolean; blockedLogged: boolean }> {
+    const [isBlockedByLoggedCount, blockedLoggedCount] = await Promise.all([
+      this.userRepository.manager.count(UserBlockedEntity, {
+        where: { blockerId: loggedUserId, blockedId: userId },
+      }),
+      this.userRepository.manager.count(UserBlockedEntity, {
+        where: { blockerId: userId, blockedId: loggedUserId },
+      }),
+    ]);
+    return {
+      isBlockedByLogged: isBlockedByLoggedCount > 0,
+      blockedLogged: blockedLoggedCount > 0,
+    };
   }
 }

@@ -21,6 +21,8 @@ Production-ready NestJS template with a Clean Architecture split across api, app
 - Reuse `ExceptionFilter`, shared decorators, guards, and response DTOs from `src/core` instead of duplicating cross-cutting code.
 - When adding code comments, write them in English only.
 - Prefer concise comments and only add them when the code is not self-explanatory.
+- In `*repository.impl.ts`, name injected `Repository<Entity>` fields after the entity in `lowerCamelCase`, for example `userBlockedRepository`.
+- In `*controller.ts`, group endpoints with the existing separator comment style used in the project, for example `//-----------------------------------------------GET paginate-----------------------------------------------------------`.
 
 ## Build and Test
 
