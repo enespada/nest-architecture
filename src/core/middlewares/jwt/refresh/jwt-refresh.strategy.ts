@@ -39,7 +39,7 @@ export class JwtRefreshStrategy extends PassportStrategy(
       );
 
     const user: User = await this.userService.findOne({
-      where: { id: decodedToken?.user?.id },
+      where: { id: decodedToken?.sub },
     });
 
     if (!user)

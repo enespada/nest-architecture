@@ -26,7 +26,7 @@ export class SessionService {
       : this.httpConfig.token.expirationTime;
 
     const token = jwt.sign(
-      { user, refresh, resetPassword },
+      { sub: user.id, refresh, resetPassword },
       this.httpConfig.token.secret,
       {
         expiresIn,

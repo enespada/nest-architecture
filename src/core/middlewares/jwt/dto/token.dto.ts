@@ -1,7 +1,5 @@
-import { User } from '@domain/user/models/user.model';
-
 export interface TokenPayload {
-  user: User;
+  sub: string;
   refresh?: boolean;
   resetPassword?: boolean;
 }

@@ -36,7 +36,7 @@ export class JwtUserStrategy extends PassportStrategy(Strategy, 'jwt.user') {
       );
 
     const user: User = await this.usersService.findOne({
-      where: { id: decodedToken?.user?.id },
+      where: { id: decodedToken?.sub },
     });
 
     if (!user)
