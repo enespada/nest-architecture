@@ -30,6 +30,8 @@ Production-ready NestJS template with a Clean Architecture split across api, app
 - Prefer explicit typing for local variables and method return types in touched code.
 - In `*repository.impl.ts`, name injected `Repository<Entity>` fields after the entity in `lowerCamelCase`, for example `userBlockedRepository`.
 - In `*controller.ts`, group endpoints with the existing separator comment style used in the project, for example `//-----------------------------------------------GET paginate-----------------------------------------------------------`.
+- When adding or moving a module method, keep that method in the same relative order across the module files that expose it, such as controller, application service, domain repository contract, and repository implementation.
+- When a method parameter uses a class-based type such as a DTO, name the parameter with the type name in `lowerCamelCase`, for example `updateUserPayloadDto` instead of generic names like `dto`.
 
 ## Build and Test
 

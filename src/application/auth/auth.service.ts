@@ -10,7 +10,6 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { User } from '@domain/user/models/user.model';
 import { SessionService } from '@core/services/session/session.service';
-import { CreateUserDTO } from '@application/user/dto/create-user.dto';
 import { UserService } from '@application/user/user.service';
 import { DeleteSessionDevicePayloadDTO } from '@application/auth/dto/delete-session-device-payload.dto';
 import { LoginResponseDto } from '@application/auth/dto/login-response.dto';
@@ -124,9 +123,7 @@ export class AuthService {
   }
 
   async register(registerRequestDto: RegisterRequestDTO): Promise<User> {
-    const createUserDto: CreateUserDTO = { ...registerRequestDto };
-
-    return await this.userService.create(createUserDto);
+    return await this.userService.create(registerRequestDto);
   }
 
   async signOut(
@@ -204,7 +201,6 @@ export class AuthService {
     tokenPayload: jwt.JwtPayload,
     userId: string,
   ): void {
-    console.log({ tokenPayload });
     if (typeof tokenPayload.sub !== 'string') {
       throw new ForbiddenException('Invalid refresh token');
     }

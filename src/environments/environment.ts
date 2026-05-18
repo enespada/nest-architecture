@@ -6,8 +6,8 @@ import { HttpConfigDTO } from './dto/http-config.dto';
 import { SwaggerDTO } from './dto/swagger.dto';
 import { SecureDTO } from './dto/secure.dto';
 import { DatabaseDTO } from './dto/database.dto';
-import { join } from 'path';
 import * as dotenv from 'dotenv';
+import { buildDatabaseOptions } from '@infrastructure/shared/database/typeorm.config';
 
 dotenv.config();
 const env: ENV = (process.env.NODE_ENV?.toUpperCase() ?? ENV.DEV) as ENV;
@@ -68,15 +68,5 @@ export default () => ({
     },
     payloadSizeLimit: '10mb',
   } as SecureDTO,
-  database: {
-    type: process.env.DATABASE_TYPE,
-    host: process.env.DATABASE_HOSTNAME,
-    port: parseInt(process.env.DATABASE_PORT),
-    username: process.env.DATABASE_USER,
-    password: process.env.DATABASE_PASSWORD,
-    database: process.env.DATABASE_NAME,
-    logging: env === ENV.DEV,
-    entities: [join(__dirname, '..', `infrastructure/**/**.entity{.ts,.js}`)],
-    synchronize: env === ENV.DEV,
-  } as DatabaseDTO,
+  database: buildDatabaseOptions(env) as DatabaseDTO,
 });

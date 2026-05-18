@@ -1,8 +1,8 @@
 import { UserService } from '@application/user/user.service';
-import { LoginRequestDTO } from '@controller/auth/dto/login-request.dto';
-import { RegisterRequestDTO } from '@controller/auth/dto/register-request.dto';
+import { LoginRequestDTO } from '@application/auth/dto/login-request.dto';
+import { RegisterRequestDTO } from '@application/auth/dto/register-request.dto';
 import { SessionDeviceType } from '@domain/auth/enums/session-device-type.enum';
-import { SignOutRequestDTO } from '@controller/auth/dto/sign-out-request.dto';
+import { SignOutRequestDTO } from '@application/auth/dto/sign-out-request.dto';
 import { MailService } from '@core/services/mail/mail.service';
 import { SessionService } from '@core/services/session/session.service';
 import { AuthRepository } from '@domain/auth/auth.repository';
@@ -63,7 +63,7 @@ function buildLoginRequestDto(
   return {
     email: 'user@example.com',
     password: 'plain-password',
-    device: {
+    sessionDevice: {
       deviceId: 'device-123',
       sessionDeviceType: SessionDeviceType.IOS,
       name: 'John iPhone',
@@ -88,8 +88,13 @@ function buildRegisterRequestDto(
 ): RegisterRequestDTO {
   return {
     email: 'register@example.com',
+    username: 'register_user',
     firstName: 'Register',
     lastName: 'User',
+    phonePreffix: '+34',
+    phone: '600555444',
+    language: 'es',
+    birthDate: '1990-05-20',
     password: 'plain-password',
     ...overrides,
   };
@@ -154,9 +159,9 @@ describe('AuthService', () => {
       authRepository.upsertSessionDevice.mockResolvedValue(
         buildSessionDevice({
           userId: 'user-123',
-          deviceId: loginRequestDto.device.deviceId,
-          sessionDeviceType: loginRequestDto.device.sessionDeviceType,
-          name: loginRequestDto.device.name,
+          deviceId: loginRequestDto.sessionDevice.deviceId,
+          sessionDeviceType: loginRequestDto.sessionDevice.sessionDeviceType,
+          name: loginRequestDto.sessionDevice.name,
           accessToken: 'new-access-token',
           refreshToken: 'new-refresh-token',
         }),
@@ -174,9 +179,9 @@ describe('AuthService', () => {
       );
       expect(authRepository.upsertSessionDevice).toHaveBeenCalledWith({
         userId: 'user-123',
-        deviceId: loginRequestDto.device.deviceId,
-        sessionDeviceType: loginRequestDto.device.sessionDeviceType,
-        name: loginRequestDto.device.name,
+        deviceId: loginRequestDto.sessionDevice.deviceId,
+        sessionDeviceType: loginRequestDto.sessionDevice.sessionDeviceType,
+        name: loginRequestDto.sessionDevice.name,
         accessToken: 'new-access-token',
         refreshToken: 'new-refresh-token',
       });
@@ -353,6 +358,13 @@ describe('AuthService', () => {
       const result: User = await service.register(registerRequestDto);
 
       expect(userService.create).toHaveBeenCalledWith(registerRequestDto);
+      expect(userService.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          phonePreffix: '+34',
+          phone: '600555444',
+          language: 'es',
+        }),
+      );
       expect(result).toBe(createdUser);
     });
   });

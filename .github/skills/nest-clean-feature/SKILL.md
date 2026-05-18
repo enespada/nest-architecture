@@ -21,7 +21,8 @@ user-invocable: true
 3. Define or update all DTOs in `src/application/**/dto`, pass controller DTOs directly from controllers to application services, and only add payload DTOs when data must be processed before reaching repositories.
 4. Add or adjust domain contracts before changing infrastructure implementations.
 5. Update repository implementations, entities, and mappers only in `src/infrastructure/**`.
-6. Run `npm run build` and the narrowest relevant test command before finishing.
+6. Keep any new or moved module method in the same relative order across controller, service, repository contract, and repository implementation.
+7. Run `npm run build` and the narrowest relevant test command before finishing.
 
 ## Project Reminders
 
@@ -35,4 +36,6 @@ user-invocable: true
 - Keep `*.spec.ts` files under `test/` instead of colocating them inside `src/`.
 - In `*controller.ts`, keep the project's separator comment style before each endpoint block.
 - In `*repository.impl.ts`, name injected `Repository<Entity>` fields after the entity in `lowerCamelCase`.
+- Keep the same relative ordering for equivalent methods across the files of a module.
+- When a method parameter uses a class-based type, name the parameter from that type in `lowerCamelCase` instead of generic names like `dto`.
 - Write code comments in English only.

@@ -30,5 +30,7 @@ export interface DatabaseDTO {
    * Los directorios admiten patrones globales.
    */
   entities: Array<any>;
+  migrations: Array<any>;
   synchronize: boolean;
+  migrationsRun: boolean;
 }

@@ -1,7 +1,7 @@
 import { CreateUserPayloadDTO } from '@application/user/dto/create-user-payload.dto';
 import { UpdateUserPayloadDTO } from '@application/user/dto/update-user-payload.dto';
 import { UserPageOptionsDTO } from '@application/user/dto/user-pagination-options.dto';
-import { User } from './models/user.model';
+import { User } from '@domain/user/models/user.model';
 import {
   FindManyOptions,
   FindOneOptions,
@@ -9,6 +9,9 @@ import {
 
 export interface UserRepository {
   create(createUserPayloadDto: CreateUserPayloadDTO): Promise<User>;
+  isUsernameAvailable(username: string): Promise<boolean>;
+  isEmailAvailable(email: string): Promise<boolean>;
+  isPhoneAvailable(phonePreffix: string, phone: string): Promise<boolean>;
   /**
    * Returns a paginated result. When loggedUserId is provided the repository
    * must populate isBlockedByLogged and blockedLogged on each returned User.

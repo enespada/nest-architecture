@@ -31,7 +31,13 @@ import {
 } from '@nestjs/swagger';
 import { UpdateUserDTO } from '@application/user/dto/update-user.dto';
 import { CreateUserDTO } from '@application/user/dto/create-user.dto';
+import { EmailAvailabilityQueryDTO } from '@application/user/dto/email-availability-query.dto';
+import { EmailAvailabilityResponseDTO } from '@application/user/dto/email-availability-response.dto';
+import { PhoneAvailabilityQueryDTO } from '@application/user/dto/phone-availability-query.dto';
+import { PhoneAvailabilityResponseDTO } from '@application/user/dto/phone-availability-response.dto';
 import { UserPageOptionsDTO } from '@application/user/dto/user-pagination-options.dto';
+import { UsernameAvailabilityQueryDTO } from '@application/user/dto/username-availability-query.dto';
+import { UsernameAvailabilityResponseDTO } from '@application/user/dto/username-availability-response.dto';
 import { User } from '@domain/user/models/user.model';
 import { UserToken } from '@core/decorators/decorators';
 
@@ -39,10 +45,6 @@ import { UserToken } from '@core/decorators/decorators';
 @ApiTags(`Users`)
 @UseFilters(ExceptionFilter)
 // @UseInterceptors(TransformInterceptor)
-@ApiBearerAuth()
-@ApiUnauthorizedResponse({
-  description: 'Bearer token must be a valid Token',
-})
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -50,12 +52,75 @@ export class UserController {
   @Post()
   @ApiOperation({ summary: 'Creates a user' })
   @ApiBody({ type: CreateUserDTO })
+  @ApiOkResponse({
+    type: User,
+    description: 'Retrieves the created user',
+  })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description: 'The request sent to the server is invalid or corrupted',
   })
-  register(@Body() createUserDto: CreateUserDTO) {
+  register(@Body() createUserDto: CreateUserDTO): Promise<User> {
     return this.userService.create(createUserDto);
+  }
+
+  //-----------------------------------------------GET username-available-----------------------------------------------------------
+  @Get('username-available')
+  @ApiOperation({ summary: 'Checks if a username is available' })
+  @ApiQuery({
+    name: 'username',
+    type: String,
+    description: 'Username to check availability for',
+  })
+  @ApiOkResponse({
+    type: UsernameAvailabilityResponseDTO,
+    description: 'Availability status of the username',
+  })
+  checkUsernameAvailable(
+    @Query() usernameAvailabilityQueryDto: UsernameAvailabilityQueryDTO,
+  ): Promise<UsernameAvailabilityResponseDTO> {
+    return this.userService.isUsernameAvailable(usernameAvailabilityQueryDto);
+  }
+
+  //-----------------------------------------------GET email-available-----------------------------------------------------------
+  @Get('email-available')
+  @ApiOperation({ summary: 'Checks if an email is available' })
+  @ApiQuery({
+    name: 'email',
+    type: String,
+    description: 'Email to check availability for',
+  })
+  @ApiOkResponse({
+    type: EmailAvailabilityResponseDTO,
+    description: 'Availability status of the email',
+  })
+  checkEmailAvailable(
+    @Query() emailAvailabilityQueryDto: EmailAvailabilityQueryDTO,
+  ): Promise<EmailAvailabilityResponseDTO> {
+    return this.userService.isEmailAvailable(emailAvailabilityQueryDto);
+  }
+
+  //-----------------------------------------------GET phone-available-----------------------------------------------------------
+  @Get('phone-available')
+  @ApiOperation({ summary: 'Checks if a phone is available' })
+  @ApiQuery({
+    name: 'phonePreffix',
+    type: String,
+    description: 'Phone preffix to check availability for',
+  })
+  @ApiQuery({
+    name: 'phone',
+    type: String,
+    description: 'Phone to check availability for',
+  })
+  @ApiOkResponse({
+    type: PhoneAvailabilityResponseDTO,
+    description: 'Availability status of the phone',
+  })
+  checkPhoneAvailable(
+    @Query() phoneAvailabilityQueryDto: PhoneAvailabilityQueryDTO,
+  ): Promise<PhoneAvailabilityResponseDTO> {
+    return this.userService.isPhoneAvailable(phoneAvailabilityQueryDto);
   }
 
   //-----------------------------------------------GET-----------------------------------------------------------
@@ -74,6 +139,10 @@ export class UserController {
   //-----------------------------------------------GET me-----------------------------------------------------------
   @Get('me')
   @UseGuards(JwtUserGuard)
+  @ApiBearerAuth()
+  @ApiUnauthorizedResponse({
+    description: 'Bearer token must be a valid Token',
+  })
   @ApiOperation({ summary: 'Gets a user by given token' })
   @ApiExtraModels(User)
   @ApiOkResponse({
@@ -91,6 +160,10 @@ export class UserController {
   //-----------------------------------------------GET paginate-----------------------------------------------------------
   @Get('paginate')
   @UseGuards(JwtUserGuard)
+  @ApiBearerAuth()
+  @ApiUnauthorizedResponse({
+    description: 'Bearer token must be a valid Token',
+  })
   @ApiOperation({ summary: 'Paginate users' })
   @ApiExtraModels(User)
   @ApiQuery({
@@ -119,6 +192,10 @@ export class UserController {
   //-----------------------------------------------GET :id-----------------------------------------------------------
   @Get(':id')
   @UseGuards(JwtUserGuard)
+  @ApiBearerAuth()
+  @ApiUnauthorizedResponse({
+    description: 'Bearer token must be a valid Token',
+  })
   @ApiParam({
     name: 'id',
     type: String,
@@ -140,6 +217,10 @@ export class UserController {
   //-------------------------------------------------PUT-------------------------------------------------------------
   @Put()
   @UseGuards(JwtUserGuard)
+  @ApiBearerAuth()
+  @ApiUnauthorizedResponse({
+    description: 'Bearer token must be a valid Token',
+  })
   @ApiOperation({ summary: 'Updates a user' })
   @ApiBody({ type: UpdateUserDTO })
   @ApiOkResponse({
@@ -161,6 +242,10 @@ export class UserController {
   //-----------------------------------------------DELETE :id-----------------------------------------------------------
   @Delete(':id')
   @UseGuards(JwtUserGuard)
+  @ApiBearerAuth()
+  @ApiUnauthorizedResponse({
+    description: 'Bearer token must be a valid Token',
+  })
   @ApiOperation({ summary: 'Deletes a user' })
   @ApiParam({
     name: 'id',

@@ -1,6 +1,12 @@
 import { CreateUserDTO } from '@application/user/dto/create-user.dto';
+import { EmailAvailabilityQueryDTO } from '@application/user/dto/email-availability-query.dto';
+import { EmailAvailabilityResponseDTO } from '@application/user/dto/email-availability-response.dto';
+import { PhoneAvailabilityQueryDTO } from '@application/user/dto/phone-availability-query.dto';
+import { PhoneAvailabilityResponseDTO } from '@application/user/dto/phone-availability-response.dto';
 import { UpdateUserDTO } from '@application/user/dto/update-user.dto';
 import { UserPageOptionsDTO } from '@application/user/dto/user-pagination-options.dto';
+import { UsernameAvailabilityQueryDTO } from '@application/user/dto/username-availability-query.dto';
+import { UsernameAvailabilityResponseDTO } from '@application/user/dto/username-availability-response.dto';
 import { PageDTO } from '@core/database/dto/page.dto';
 import { PageMetaDTO } from '@core/database/dto/pagination-meta.dto';
 import { Inject, Injectable } from '@nestjs/common';
@@ -12,7 +18,7 @@ import {
   FindManyOptions,
   FindOneOptions,
 } from '@domain/shared/interfaces/find-options.interface';
-import { CreateUserPayloadDTO } from './dto/create-user-payload.dto';
+import { CreateUserPayloadDTO } from '@application/user/dto/create-user-payload.dto';
 
 @Injectable()
 export class UserService {
@@ -23,26 +29,47 @@ export class UserService {
   ) {}
 
   async create(createUserDto: CreateUserDTO): Promise<User> {
-    const createUserPayloadDto: CreateUserPayloadDTO = { ...createUserDto };
-    createUserPayloadDto.password = this.sessionService.encrypt(
-      createUserPayloadDto.password,
-    );
+    const createUserPayloadDto: CreateUserPayloadDTO = {
+      email: createUserDto.email,
+      username: createUserDto.username,
+      firstName: createUserDto.firstName,
+      lastName: createUserDto.lastName,
+      phonePreffix: createUserDto.phonePreffix,
+      phone: createUserDto.phone,
+      language: createUserDto.language,
+      birthDate: createUserDto.birthDate,
+      password: this.sessionService.encrypt(createUserDto.password),
+    };
+
     return await this.userRepository.create(createUserPayloadDto);
   }
 
-  async find(options?: FindManyOptions<User>): Promise<User[]> {
-    return await this.userRepository.find(options ?? {});
+  async isUsernameAvailable(
+    usernameAvailabilityQueryDto: UsernameAvailabilityQueryDTO,
+  ): Promise<UsernameAvailabilityResponseDTO> {
+    const available: boolean = await this.userRepository.isUsernameAvailable(
+      usernameAvailabilityQueryDto.username,
+    );
+    return { available };
   }
 
-  async findOne(
-    options?: FindOneOptions<User>,
-    loggedUserId?: string,
-  ): Promise<User> {
-    return await this.userRepository.findOne(options ?? {}, loggedUserId);
+  async isEmailAvailable(
+    emailAvailabilityQueryDto: EmailAvailabilityQueryDTO,
+  ): Promise<EmailAvailabilityResponseDTO> {
+    const available: boolean = await this.userRepository.isEmailAvailable(
+      emailAvailabilityQueryDto.email,
+    );
+    return { available };
   }
 
-  async findById(userId: string, loggedUserId?: string): Promise<User> {
-    return await this.userRepository.findById(userId, loggedUserId);
+  async isPhoneAvailable(
+    phoneAvailabilityQueryDto: PhoneAvailabilityQueryDTO,
+  ): Promise<PhoneAvailabilityResponseDTO> {
+    const available: boolean = await this.userRepository.isPhoneAvailable(
+      phoneAvailabilityQueryDto.phonePreffix,
+      phoneAvailabilityQueryDto.phone,
+    );
+    return { available };
   }
 
   async paginate(
@@ -60,15 +87,39 @@ export class UserService {
     return new PageDTO(entities, pageMetaDto);
   }
 
+  async find(options?: FindManyOptions<User>): Promise<User[]> {
+    return await this.userRepository.find(options ?? {});
+  }
+
+  async findOne(
+    options?: FindOneOptions<User>,
+    loggedUserId?: string,
+  ): Promise<User> {
+    return await this.userRepository.findOne(options ?? {}, loggedUserId);
+  }
+
+  async findById(userId: string, loggedUserId?: string): Promise<User> {
+    return await this.userRepository.findById(userId, loggedUserId);
+  }
+
   async update(userId: string, updateUserDto: UpdateUserDTO): Promise<User> {
     // We search the user to check if it exists
     await this.userRepository.findById(userId);
-    updateUserDto.password = this.sessionService.encrypt(
-      updateUserDto.password,
-    );
-    const updateUserPayloadDto: Partial<UpdateUserPayloadDTO> = {
-      ...updateUserDto,
+
+    const updateUserPayloadDto: UpdateUserPayloadDTO = {
+      email: updateUserDto.email,
+      username: updateUserDto.username,
+      firstName: updateUserDto.firstName,
+      lastName: updateUserDto.lastName,
+      phonePreffix: updateUserDto.phonePreffix,
+      phone: updateUserDto.phone,
+      language: updateUserDto.language,
+      birthDate: updateUserDto.birthDate,
+      password: updateUserDto.password
+        ? this.sessionService.encrypt(updateUserDto.password)
+        : undefined,
     };
+
     return await this.userRepository.update(userId, updateUserPayloadDto);
   }
 

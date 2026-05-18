@@ -9,7 +9,18 @@ import { UserBlockedService } from './user-blocked.service';
 
 // Creates a minimal valid User stub for test assertions
 function makeUser(id: string): User {
-  return new User(id, `${id}@test.com`, 'Test', 'User', 'hashed-pw');
+  return new User(
+    id,
+    `${id}@test.com`,
+    `${id}_username`,
+    'Test',
+    'User',
+    '+34',
+    '600000000',
+    'es',
+    '1990-01-01',
+    'hashed-pw',
+  );
 }
 
 describe('UserBlockedService', () => {
@@ -33,6 +44,9 @@ describe('UserBlockedService', () => {
       findById: jest.fn(),
       update: jest.fn(),
       remove: jest.fn(),
+      isUsernameAvailable: jest.fn(),
+      isEmailAvailable: jest.fn(),
+      isPhoneAvailable: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({

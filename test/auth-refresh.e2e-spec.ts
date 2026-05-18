@@ -20,8 +20,13 @@ import { User } from '../src/domain/user/models/user.model';
 const AUTHENTICATED_USER = new User(
   'aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa',
   'auth@test.com',
+  'auth-user',
   'Auth',
   'User',
+  '+34',
+  '600000001',
+  'es',
+  '1990-05-20',
   'hashed',
 );
 

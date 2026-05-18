@@ -37,8 +37,13 @@ import { User } from '../src/domain/user/models/user.model';
 const LOGGED_USER = new User(
   'aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa',
   'logged@test.com',
+  'logged-user',
   'Logged',
   'User',
+  '+34',
+  '600000010',
+  'es',
+  '1990-05-20',
   'hashed',
 );
 
@@ -47,8 +52,13 @@ const OTHER_USER_ID = 'bbbbbbbb-bbbb-4bbb-bbbb-bbbbbbbbbbbb';
 const OTHER_USER = new User(
   OTHER_USER_ID,
   'other@test.com',
+  'other-user',
   'Other',
   'User',
+  '+34',
+  '600000011',
+  'en',
+  '1991-06-21',
   'hashed',
   true, // isBlockedByLogged — LOGGED_USER has blocked OTHER_USER
   false, // blockedLogged
@@ -305,8 +315,13 @@ describe('UserBlocked lifecycle (e2e)', () => {
       const meWithFlags = new User(
         LOGGED_USER.id,
         LOGGED_USER.email,
+        LOGGED_USER.username,
         LOGGED_USER.firstName,
         LOGGED_USER.lastName,
+        LOGGED_USER.phonePreffix,
+        LOGGED_USER.phone,
+        LOGGED_USER.language,
+        LOGGED_USER.birthDate,
         LOGGED_USER.password,
         false, // isBlockedByLogged — a user cannot block themselves
         false, // blockedLogged

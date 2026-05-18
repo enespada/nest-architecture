@@ -11,13 +11,16 @@ import { UserRepository } from '@domain/user/user.repository';
 import { CreateUserPayloadDTO } from '@application/user/dto/create-user-payload.dto';
 import { UpdateUserPayloadDTO } from '@application/user/dto/update-user-payload.dto';
 import { UserPageOptionsDTO } from '@application/user/dto/user-pagination-options.dto';
-import { UserEntity, UserWhere } from './entities/user.entity';
+import {
+  UserEntity,
+  UserWhere,
+} from '@infrastructure/user/entities/user.entity';
 import {
   FindManyOptions,
   FindOneOptions,
 } from '@domain/shared/interfaces/find-options.interface';
 import { FindOptionsMapper } from '@infrastructure/shared/mappers/find-options.mapper';
-import { UserMapper } from './mappers/user.mapper';
+import { UserMapper } from '@infrastructure/user/mappers/user.mapper';
 import { UserBlockedEntity } from '@infrastructure/user-blocked/entities/user-blocked.entity';
 
 @Injectable()
@@ -28,16 +31,41 @@ export class UserRepositoryImpl implements UserRepository {
   ) {}
 
   async create(createUserPayloadDto: CreateUserPayloadDTO): Promise<User> {
-    const user = this.userRepository.create(createUserPayloadDto);
-    await this.userRepository.insert(user);
-    return await this.findById(user.id);
+    const userEntity: UserEntity = this.userRepository.create({
+      ...createUserPayloadDto,
+    });
+    await this.userRepository.insert(userEntity);
+    return await this.findById(userEntity.id);
+  }
+
+  async isUsernameAvailable(username: string): Promise<boolean> {
+    const count: number = await this.userRepository.count({
+      where: { username },
+    });
+    return count === 0;
+  }
+
+  async isEmailAvailable(email: string): Promise<boolean> {
+    const count: number = await this.userRepository.count({
+      where: { email },
+    });
+    return count === 0;
+  }
+
+  async isPhoneAvailable(
+    phonePreffix: string,
+    phone: string,
+  ): Promise<boolean> {
+    const count: number = await this.userRepository.count({
+      where: { phonePreffix, phone },
+    });
+    return count === 0;
   }
 
   async paginate(
     userPageOptionsDto: UserPageOptionsDTO,
     loggedUserId?: string,
   ): Promise<any> {
-    console.log(userPageOptionsDto.where);
     const { fullName, userName, ...standardWhere } =
       (userPageOptionsDto.where ?? {}) as UserPageOptionsDTO['where'] & {
         fullName?: string;
@@ -159,9 +187,11 @@ export class UserRepositoryImpl implements UserRepository {
 
   async update(
     userId: string,
-    updateUserPayloadDTO: UpdateUserPayloadDTO,
+    updateUserPayloadDto: UpdateUserPayloadDTO,
   ): Promise<User> {
-    await this.userRepository.update(userId, updateUserPayloadDTO);
+    await this.userRepository.update(userId, {
+      ...updateUserPayloadDto,
+    });
     return await this.findById(userId);
   }
 

@@ -54,8 +54,11 @@ export class UserBlockedService {
    */
   async paginateBlocked(
     blockerId: string,
-    dto: UserBlockedPaginationOptionsDTO,
+    userBlockedPaginationOptionsDto: UserBlockedPaginationOptionsDTO,
   ): Promise<{ items: User[]; total: number }> {
-    return this.userBlockedRepository.paginateBlocked(blockerId, dto);
+    return this.userBlockedRepository.paginateBlocked(
+      blockerId,
+      userBlockedPaginationOptionsDto,
+    );
   }
 }

@@ -36,29 +36,33 @@ export class RedsysService {
    * @returns {MerchantParams} Redsys merchant object
    */
   private getMerchantParamsObject(
-    dto: CreatePaymentRedsysDto,
+    createPaymentRedsysDto: CreatePaymentRedsysDto,
     dsMerchantOrder: string,
   ): MerchantParams {
     return {
-      DS_MERCHANT_AMOUNT: dto.amount,
+      DS_MERCHANT_AMOUNT: createPaymentRedsysDto.amount,
       DS_MERCHANT_ORDER: dsMerchantOrder,
       DS_MERCHANT_MERCHANTCODE: this.config.DS_MERCHANT_MERCHANTCODE,
       DS_MERCHANT_CURRENCY: this.config.DS_MERCHANT_CURRENCY,
-      DS_MERCHANT_MERCHANTDATA: Buffer.from(JSON.stringify(dto.data)).toString(
-        'base64',
-      ),
+      DS_MERCHANT_MERCHANTDATA: Buffer.from(
+        JSON.stringify(createPaymentRedsysDto.data),
+      ).toString('base64'),
       DS_MERCHANT_TRANSACTIONTYPE: this.config.DS_MERCHANT_TRANSACTIONTYPE,
       DS_MERCHANT_TERMINAL: this.config.DS_MERCHANT_TERMINAL,
       DS_MERCHANT_MERCHANTURL: this.config.DS_MERCHANT_MERCHANTURL,
-      DS_MERCHANT_URLOK: dto.urlOk ?? this.config.DS_MERCHANT_URLOK,
-      DS_MERCHANT_URLKO: dto.urlKo ?? this.config.DS_MERCHANT_URLKO,
+      DS_MERCHANT_URLOK:
+        createPaymentRedsysDto.urlOk ?? this.config.DS_MERCHANT_URLOK,
+      DS_MERCHANT_URLKO:
+        createPaymentRedsysDto.urlKo ?? this.config.DS_MERCHANT_URLKO,
     };
   }
 
-  getRequestParams(dto: CreatePaymentRedsysDto): RedsysRequestParams {
+  getRequestParams(
+    createPaymentRedsysDto: CreatePaymentRedsysDto,
+  ): RedsysRequestParams {
     const dsMerchantOrder = this.newOrderReference();
     const mParams: MerchantParams = this.getMerchantParamsObject(
-      dto,
+      createPaymentRedsysDto,
       dsMerchantOrder,
     );
 

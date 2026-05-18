@@ -10,8 +10,8 @@ import request = require('supertest');
 
 import { AuthController } from '../src/api/auth/auth.controller';
 import { LoginResponseDto } from '../src/application/auth/dto/login-response.dto';
+import { SignOutRequestDTO } from '../src/application/auth/dto/sign-out-request.dto';
 import { AuthService } from '../src/application/auth/auth.service';
-import { SignOutRequestDTO } from '../src/api/auth/dto/sign-out-request.dto';
 import { ExceptionFilter } from '../src/core/exceptions/global.exception';
 import { JwtUserGuard } from '../src/core/middlewares/jwt/user/jwt-user.guard';
 import { CustomLoggerService } from '../src/core/services/logger/logger.service';
@@ -20,8 +20,13 @@ import { User } from '../src/domain/user/models/user.model';
 const AUTHENTICATED_USER = new User(
   'aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa',
   'auth@test.com',
+  'auth-user',
   'Auth',
   'User',
+  '+34',
+  '600000001',
+  'es',
+  '1990-05-20',
   'hashed',
 );
 

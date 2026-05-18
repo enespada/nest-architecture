@@ -53,11 +53,13 @@ export class UserBlockedRepositoryImpl implements UserBlockedRepository {
 
   async paginateBlocked(
     blockerId: string,
-    dto: UserBlockedPaginationOptionsDTO,
+    userBlockedPaginationOptionsDto: UserBlockedPaginationOptionsDTO,
   ): Promise<{ items: User[]; total: number }> {
-    const limit = dto.limit ?? 10;
-    const offset = dto.offset ?? 0;
-    const nameFilter = dto.where?.fullName ?? dto.where?.userName;
+    const limit = userBlockedPaginationOptionsDto.limit ?? 10;
+    const offset = userBlockedPaginationOptionsDto.offset ?? 0;
+    const nameFilter =
+      userBlockedPaginationOptionsDto.where?.fullName ??
+      userBlockedPaginationOptionsDto.where?.userName;
 
     // Resolve blocked user IDs for this blocker via a single subquery-style join.
     // We join UserBlockedEntity → UserEntity on blockedId to filter and paginate

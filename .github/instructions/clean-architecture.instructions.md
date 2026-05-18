@@ -14,6 +14,8 @@ applyTo: 'src/**/*.ts'
 - Keep persistence details in `src/infrastructure/**`: TypeORM entities, repository implementations, and mappers.
 - Import through workspace aliases such as `@application/*`, `@domain/*`, `@infrastructure/*`, `@core/*`, and `@environments/*`.
 - Map `Entity <-> Domain Model` explicitly in infrastructure mappers.
+- Keep public methods in the same relative order across the files of a feature or module when those methods are exposed in multiple layers, for example service, repository contract, and repository implementation.
+- When a method parameter has a class-based type, use the type name in `lowerCamelCase` for the parameter name instead of generic names like `dto`.
 - In `*repository.impl.ts`, name injected `Repository<Entity>` instances after the entity in `lowerCamelCase` instead of generic names like `repository`.
 - Do not inject TypeORM repositories into controllers or domain classes.
 - Keep `*.spec.ts` files under `test/`, mirroring the relevant feature structure instead of placing them inside `src/`.

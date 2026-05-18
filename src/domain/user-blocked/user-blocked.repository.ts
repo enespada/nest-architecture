@@ -27,6 +27,6 @@ export interface UserBlockedRepository {
    */
   paginateBlocked(
     blockerId: string,
-    dto: UserBlockedPaginationOptionsDTO,
+    userBlockedPaginationOptionsDto: UserBlockedPaginationOptionsDTO,
   ): Promise<{ items: User[]; total: number }>;
 }

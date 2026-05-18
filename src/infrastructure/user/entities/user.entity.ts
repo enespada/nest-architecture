@@ -13,11 +13,28 @@ export class UserEntity extends AbstractEntity {
   @ApiProperty()
   email: string;
 
+  @Column({ unique: true })
+  @ApiProperty()
+  username: string;
+
   @Column()
   firstName: string;
 
   @Column()
   lastName: string;
+
+  @Column({ length: 8, nullable: true })
+  phonePreffix: string | null;
+
+  @Column({ nullable: true })
+  phone: string | null;
+
+  @Column()
+  language: string;
+
+  @Column({ type: 'date' })
+  @ApiProperty()
+  birthDate: string;
 
   @Column({ select: false })
   password: string;
@@ -35,8 +52,10 @@ export const defaultUserValues: Array<UserEntity> = [];
 //--------------------------------------------Where-------------------------------------------------------------
 enum UserWhereEnum {
   email = 'email',
+  username = 'username',
   firstName = 'firstName',
   lastName = 'lastName',
+  birthDate = 'birthDate',
 }
 export type UserWhere = UserWhereEnum | AbstractWhere;
 export const UserWhere = { ...UserWhereEnum, ...AbstractWhere };
@@ -44,8 +63,10 @@ export const UserWhere = { ...UserWhereEnum, ...AbstractWhere };
 //--------------------------------------------OrderBy-------------------------------------------------------------
 enum UserOrderByEnum {
   email = 'email',
+  username = 'username',
   firstName = 'firstName',
   lastName = 'lastName',
+  birthDate = 'birthDate',
 }
 export type UserOrderBy = UserOrderByEnum | AbstractOrderBy;
 export const UserOrderBy = { ...UserOrderByEnum, ...AbstractOrderBy };

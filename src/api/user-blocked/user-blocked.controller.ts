@@ -50,11 +50,11 @@ export class UserBlockedController {
   })
   async paginateBlocked(
     @UserToken() user: User,
-    @Query() dto: UserBlockedPaginationOptionsDTO,
+    @Query() userBlockedPaginationOptionsDto: UserBlockedPaginationOptionsDTO,
   ): Promise<User[]> {
     const { items } = await this.userBlockedService.paginateBlocked(
       user.id,
-      dto,
+      userBlockedPaginationOptionsDto,
     );
     return items;
   }
